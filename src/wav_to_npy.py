@@ -7,6 +7,7 @@ import os
 RAW_DIR = "data/raw"
 OUT_DIR = "data/processed"
 SR_EXPECTED = 16000  # we verified all files are 16000 Hz
+SPEAKER = "akshay"   # only this speaker's recordings are converted
 
 def parse_filename(path):
     """
@@ -31,6 +32,8 @@ signals, labels, speakers, languages = [], [], [], []
 
 for wav_path in glob.glob(os.path.join(RAW_DIR, '**', '*.wav'), recursive=True):
     digit, lang, speaker = parse_filename(wav_path)
+    if speaker != SPEAKER:
+        continue   # skip the other speakers' recordings in data/raw
     signal, sr = sf.read(wav_path)
     
     assert sr == SR_EXPECTED, f"Unexpected sample rate {sr} in {wav_path}"
@@ -60,9 +63,9 @@ for lang in ['en', 'de']:
     lang_speakers = [speakers[i] for i in idx]
     
     # Save as object array (signals have different lengths — that's OK for now)
-    np.save(f"{OUT_DIR}/maulik_{lang}_signals.npy",  np.array(lang_signals,  dtype=object))
-    np.save(f"{OUT_DIR}/maulik_{lang}_labels.npy",   np.array(lang_labels,   dtype=np.int8))
-    np.save(f"{OUT_DIR}/maulik_{lang}_speakers.npy", np.array(lang_speakers, dtype=str))
+    np.save(f"{OUT_DIR}/{SPEAKER}_{lang}_signals.npy",  np.array(lang_signals,  dtype=object))
+    np.save(f"{OUT_DIR}/{SPEAKER}_{lang}_labels.npy",   np.array(lang_labels,   dtype=np.int8))
+    np.save(f"{OUT_DIR}/{SPEAKER}_{lang}_speakers.npy", np.array(lang_speakers, dtype=str))
     
     print(f"Saved {len(idx)} files for lang='{lang}'")
 
