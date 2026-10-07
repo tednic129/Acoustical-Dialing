@@ -217,10 +217,14 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-*.wav
+# Acoustical dialling project
+# Recordings in data/raw/ ARE committed (one source of truth for the whole team).
+# Everything generated from them is rebuilt locally by the scripts:
+data/processed/
 *.npy
 *.npz
 *.pkl
 *.joblib
-data/
 models/
+# Editor swap files
+*.swp
