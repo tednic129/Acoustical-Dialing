@@ -44,8 +44,20 @@ Acoustical-Dialing/                  CHANGED ON BRANCH          GIT
 └── report/                          report/<topic>             committed
 ```
 
-`approach_1a_fft_dr/` and `approach_1b_spectrogram/` hold Akshay's and Maulik's existing scripts,
-moved here unchanged from their `Akshay` and `maulik` branches.
+Every approach folder has the same core: `features.py` (one word in, one feature vector out) and
+`train.py` (validate, test once, save the demo model). 1.a and 1.c also have a `sweep.py` for their
+main experiment. Akshay's and Maulik's first scripts (`wav_to_npy.py`, `record.py`, …) stay in
+their folders; `common/prepare_data.py` now does the WAV-to-NPY step for everyone.
+
+| Approach | Features | Values per word | Classifiers | Experiment |
+|---|---|---|---|---|
+| 1.a | 128-band FFT spectrum, then PCA or LDA | 30 (PCA, default) | kNN, linear SVM, RBF SVM | `sweep.py`: accuracy vs. values kept |
+| 1.b | full 257 × 50 log-spectrogram | 12,850 | kNN, linear SVM, RBF SVM | — |
+| 1.c | the same spectrogram, 2-D DCT compressed | 256 (k = 16) | RBF SVM | `sweep.py`: accuracy vs. compression |
+
+Each classifier has the same settings in every approach (kNN with k = 3, linear SVM with C = 1,
+RBF SVM with C = 10), and the RBF SVM appears in all three, so the comparison changes only the
+features.
 
 ## Quick start
 
@@ -60,14 +72,22 @@ python -m common.prepare_data          # WAV -> data/processed/*.npy, a few seco
 
 Run every script from the repository root with `python -m`, because all paths are relative to it.
 
-Approach 1.c, for example:
+Then each owner runs their approach and commits the files it writes to `results/`:
 
 ```bash
-python -m approach_1c_compressed.sweep                # accuracy vs. compression (training speakers)
-python -m approach_1c_compressed.train                # test once, save models/1c_best.joblib
-python -m live_demo.dial --approach 1c --target 0631123456 --simulate
+python -m approach_1a_fft_dr.sweep                    # 1.a: accuracy vs. PCA/LDA values kept
+python -m approach_1a_fft_dr.train                    # 1.a: test once, save models/1a_best.joblib
+python -m approach_1b_spectrogram.train               # 1.b: test once, save models/1b_best.joblib
+python -m approach_1c_compressed.sweep                # 1.c: accuracy vs. compression
+python -m approach_1c_compressed.train                # 1.c: test once, save models/1c_best.joblib
+
+python -m live_demo.dial --approach 1b --target 0631123456 --simulate
 python compare.py                                     # final table from results/*.json
 ```
+
+The sweeps use the training speakers only. Each `train.py` prints validation accuracy (speaker-wise
+cross-validation on the training speakers) and the one-time test accuracy on the `split.json`
+speakers.
 
 ## Data
 
@@ -105,9 +125,12 @@ git push -u origin approach/1c
 git pull origin main                        # weekly: stay in sync
 ```
 
-## Decisions still open
+## Decisions
 
-- **Test speakers** in `split.json` (with three speakers: hold one out). Training scripts refuse
-  to run until this is set.
-- **Language** for the demo: German only, or German and English.
+- **Test speaker: `tapan`** (`split.json`, PR #3). Akshay and Maulik are the training speakers;
+  Tapan's recordings are used once, for the test accuracy and the simulated demo.
+
+Still open:
+
+- **Language** for the demo: German only (the current default), or German and English.
 - **Target number**: the K-town pizza shop the demo dials.
