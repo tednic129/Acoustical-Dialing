@@ -36,7 +36,15 @@ def main():
     parser.add_argument("--k", type=int, default=K, help="keep k x k DCT coefficients")
     parser.add_argument("--languages", nargs="+", default=list(config.LANGUAGES))
     parser.add_argument("--C", type=float, default=10.0)
+    parser.add_argument("--gamma-factor", type=float, default=None,
+                        help="gamma = factor / (k x k); leave out for gamma='scale'")
+    parser.add_argument("--tuned", action="store_true",
+                        help="final run: save under the tag 1c_tuned (once only)")
     args = parser.parse_args()
+    tag = "1c_tuned" if args.tuned else "1c"
+    gamma = "scale" if args.gamma_factor is None else args.gamma_factor / (args.k * args.k)
+    if args.tuned and list(config.RESULTS_DIR.glob("1c_tuned_*.json")):
+        raise SystemExit("results/1c_tuned_*.json already exist: the tuned test runs only once.")
 
     data = load_processed(languages=args.languages)
     train, test = split_masks(data["speakers"])
@@ -44,7 +52,7 @@ def main():
     print(f"Train: {train.sum()} words {sorted(set(speakers[train].tolist()))} | Test: {test.sum()} words "
           f"{sorted(set(speakers[test].tolist()))} | languages {args.languages} | k = {args.k}")
 
-    model = build_model(args.k, c=args.C)
+    model = build_model(args.k, c=args.C, gamma=gamma)
     cv, groups = speaker_cv(speakers[train])
     validation = cross_val_score(model, events[train], labels[train], groups=groups, cv=cv).mean()
     print(f"Validation accuracy (training speakers): {validation:.3f}")
@@ -55,15 +63,16 @@ def main():
     ms_per_word = (time.perf_counter() - start) / max(1, test.sum()) * 1000
 
     result = save_results(
-        "1c", "RBF SVM", labels[test], predicted, values_per_word=args.k * args.k,
+        tag, "RBF SVM", labels[test], predicted, values_per_word=args.k * args.k,
+        C=args.C, gamma_factor=args.gamma_factor,
         k=args.k, compression_ratio=round((config.N_FFT // 2 + 1) * config.N_FRAMES / (args.k * args.k), 1),
         validation_accuracy=round(float(validation), 4), ms_per_word=round(ms_per_word, 2),
         languages=args.languages, test_speakers=sorted(set(speakers[test].tolist())),
     )
     config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
-    joblib.dump(model, config.MODELS_DIR / "1c_best.joblib")
+    joblib.dump(model, config.MODELS_DIR / f"{tag}_best.joblib")
     print(f"Test accuracy: {result['test_accuracy']:.3f}   per digit: {result['per_digit_accuracy']}")
-    print("Saved results/1c_rbf_svm.json, results/1c_rbf_svm_confusion.png and models/1c_best.joblib")
+    print(f"Saved results/{tag}_rbf_svm.json, results/{tag}_rbf_svm_confusion.png and models/{tag}_best.joblib")
 
 
 if __name__ == "__main__":
