@@ -1,0 +1,70 @@
+{
+  "languages": [
+    "en"
+  ],
+  "speakers": [
+    "akshay",
+    "maulik"
+  ],
+  "classifier": "RBF SVM",
+  "C": 10.0,
+  "gamma_factor": null,
+  "rows": [
+    {
+      "k": null,
+      "values": 12850,
+      "ratio": 1.0,
+      "kb_float32": 51.4,
+      "accuracy": 0.6232,
+      "std": 0.1132
+    },
+    {
+      "k": 4,
+      "values": 16,
+      "ratio": 803.1,
+      "kb_float32": 0.064,
+      "accuracy": 0.5868,
+      "std": 0.0768
+    },
+    {
+      "k": 8,
+      "values": 64,
+      "ratio": 200.8,
+      "kb_float32": 0.256,
+      "accuracy": 0.6114,
+      "std": 0.0614
+    },
+    {
+      "k": 12,
+      "values": 144,
+      "ratio": 89.2,
+      "kb_float32": 0.576,
+      "accuracy": 0.7232,
+      "std": 0.0132
+    },
+    {
+      "k": 16,
+      "values": 256,
+      "ratio": 50.2,
+      "kb_float32": 1.024,
+      "accuracy": 0.6859,
+      "std": 0.0041
+    },
+    {
+      "k": 24,
+      "values": 576,
+      "ratio": 22.3,
+      "kb_float32": 2.304,
+      "accuracy": 0.6495,
+      "std": 0.0405
+    },
+    {
+      "k": 32,
+      "values": 1024,
+      "ratio": 12.5,
+      "kb_float32": 4.096,
+      "accuracy": 0.6164,
+      "std": 0.0436
+    }
+  ]
+}

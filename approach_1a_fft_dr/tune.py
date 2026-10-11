@@ -1,7 +1,9 @@
 """Tune approach 1.a on the training speakers only, following the team's tuning protocol.
 
-    py -m approach_1a_fft_dr.tune
+    py -m approach_1a_fft_dr.tune                    # German  -> results/1a_tuning.json
+    py -m approach_1a_fft_dr.tune --languages en     # English -> results/1a_en_tuning.json
 """
+import argparse
 import json
 
 from sklearn.decomposition import PCA
@@ -89,7 +91,11 @@ def choose(rows, classifier):
 
 
 def main():
-    data = load_processed(languages=["de"])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--languages", nargs="+", default=["de"])
+    args = parser.parse_args()
+    suffix = "" if args.languages == ["de"] else "_" + "_".join(args.languages)
+    data = load_processed(languages=args.languages)
     train, test = split_masks(data["speakers"])
 
     X = features_batch(data["events"][train], n_bands=128)
@@ -123,11 +129,11 @@ def main():
     for name, row in chosen.items():
         print(f"  {name:<11} {row['reduction']}  validation {row['mean_validation_accuracy']:.3f}  {row['params']}")
 
-    path = config.RESULTS_DIR / "1a_tuning.json"
+    path = config.RESULTS_DIR / f"1a{suffix}_tuning.json"
     with open(path, "w", encoding="utf-8") as f:
         json.dump({
             "approach": "1a",
-            "languages": ["de"],
+            "languages": args.languages,
             "fft_bands": 128,
             "training_speakers": sorted(set(speakers.tolist())),
             "tie_rule": TIE_RULE,
