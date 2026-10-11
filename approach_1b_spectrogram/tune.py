@@ -1,7 +1,9 @@
 """Tune the 1.b classifiers on the training speakers only (see the team's tuning protocol).
 
-    python -m approach_1b_spectrogram.tune
+    python -m approach_1b_spectrogram.tune                    # German  -> results/1b_tuning.json
+    python -m approach_1b_spectrogram.tune --languages en     # English -> results/1b_en_tuning.json
 """
+import argparse
 import json
 
 import numpy as np
@@ -15,6 +17,12 @@ from approach_1b_spectrogram.features import N_VALUES, features_batch
 from common import config
 from common.evaluation import speaker_cv
 from common.preprocessing import load_processed, split_masks
+
+
+def prefix(languages):
+    """File-name prefix: '1b' for German (unchanged names), '1b_en' for English, '1b_de_en' for both."""
+    languages = list(languages)
+    return "1b" if languages == ["de"] else "1b_" + "_".join(languages)
 
 
 def load_training_features(languages=("de",)):
@@ -45,8 +53,13 @@ GRIDS = {
 
 
 def main():
-    X, y, speakers = load_training_features()
-    report = {"languages": ["de"], "train_speakers": sorted(set(speakers.tolist())),
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--languages", nargs="+", default=["de"])
+    args = parser.parse_args()
+
+    X, y, speakers = load_training_features(args.languages)
+    print(f"{len(y)} training words from {sorted(set(speakers.tolist()))}, languages {args.languages}")
+    report = {"languages": args.languages, "train_speakers": sorted(set(speakers.tolist())),
               "gamma": "factor / 12850 features", "classifiers": {}}
     for name, (classifier, grid) in GRIDS.items():
         gs = search(classifier, grid, X, y, speakers)
@@ -59,7 +72,7 @@ def main():
         for row in sorted(rows, key=lambda row: -row["validation"]):
             print(f"    {row['validation']:.3f} +/- {row['std']:.3f}  {row['params']}")
 
-    path = config.RESULTS_DIR / "1b_tuning.json"
+    path = config.RESULTS_DIR / f"{prefix(args.languages)}_tuning.json"
     path.write_text(json.dumps(report, indent=2))
     print(f"\nSaved {path.relative_to(config.ROOT)}")
 
