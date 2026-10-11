@@ -22,7 +22,7 @@ from sklearn.preprocessing import FunctionTransformer, StandardScaler
 from sklearn.svm import SVC
 
 from approach_1b_spectrogram.features import N_VALUES, SHAPE, features_batch
-from approach_1b_spectrogram.tune import prefix
+from approach_1b_spectrogram.tune import prefix, tie_rule
 from common import config
 from common.evaluation import save_results, speaker_cv
 from common.preprocessing import load_processed, split_masks
@@ -47,7 +47,7 @@ def build_models(tuned=False, languages=("de",)):
             raise SystemExit(f"{tuning_file.name} not found: run tune.py with the same --languages first.")
         chosen = json.loads(tuning_file.read_text())["classifiers"]
         for name, model in models.items():
-            model.set_params(**chosen[name]["best_params"])
+            model.set_params(**tie_rule(chosen[name]["rows"]))
     return models
 
 
