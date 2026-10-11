@@ -30,14 +30,18 @@ from common.spectrogram import log_spectrogram  # noqa: E402
 K_VALUES = [4, 8, 12, 16, 24, 32]
 
 
-def rbf_svm():
+def rbf_svm(c, gamma_factor, n_values):
     """The classifier 1.c shares with 1.b, so the comparison only changes the features."""
-    return make_pipeline(StandardScaler(), SVC(kernel="rbf", C=10, gamma="scale"))
+    gamma = "scale" if gamma_factor is None else gamma_factor / n_values
+    return make_pipeline(StandardScaler(), SVC(kernel="rbf", C=c, gamma=gamma))
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--languages", nargs="+", default=list(config.LANGUAGES))
+    parser.add_argument("--C", type=float, default=10.0)
+    parser.add_argument("--gamma-factor", type=float, default=None,
+                        help="gamma = factor / values per word; leave out for gamma='scale'")
     args = parser.parse_args()
 
     data = load_processed(languages=args.languages)
@@ -50,24 +54,34 @@ def main():
 
     spectrograms = np.stack([log_spectrogram(e) for e in events])
     cv, groups = speaker_cv(speakers)
+    def validate(x):
+        """Speaker-wise validation scores of the shared RBF SVM on the feature matrix x."""
+        return cross_val_score(rbf_svm(args.C, args.gamma_factor, x.shape[1]), x, labels, groups=groups, cv=cv)
+
     full = spectrograms.reshape(len(spectrograms), -1)
-    acc_full = cross_val_score(rbf_svm(), full, labels, groups=groups, cv=cv).mean()
+    scores_full = validate(full)
+    acc_full = scores_full.mean()
     rows = [{"k": None, "values": full.shape[1], "ratio": 1.0, "kb_float32": full.shape[1] * 4 / 1000,
-             "accuracy": round(float(acc_full), 4)}]
+             "accuracy": round(float(acc_full), 4), "std": round(float(scores_full.std()), 4)}]
     print(f"\n{'kept':>9} {'values':>7} {'smaller':>8} {'accuracy':>9}")
     print(f"{'full':>9} {full.shape[1]:7d} {'1x':>8} {acc_full:9.3f}")
     for k in K_VALUES:
         x = np.stack([compress_dct(s, k) for s in spectrograms])
-        acc = cross_val_score(rbf_svm(), x, labels, groups=groups, cv=cv).mean()
+        scores = validate(x)
+        acc = scores.mean()
         ratio = full.shape[1] / x.shape[1]
         rows.append({"k": k, "values": x.shape[1], "ratio": round(ratio, 1), "kb_float32": x.shape[1] * 4 / 1000,
-                     "accuracy": round(float(acc), 4)})
+                     "accuracy": round(float(acc), 4), "std": round(float(scores.std()), 4)})
         print(f"{f'{k} x {k}':>9} {x.shape[1]:7d} {f'{ratio:.0f}x':>8} {acc:9.3f}")
 
+    tuning = args.gamma_factor is not None
+    json_name = "1c_tuning.json" if tuning else "1c_sweep.json"
+    plot_name = "1c_tuning_accuracy_vs_compression.png" if tuning else "1c_accuracy_vs_compression.png"
     config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(config.RESULTS_DIR / "1c_sweep.json", "w", encoding="utf-8") as f:
+    with open(config.RESULTS_DIR / json_name, "w", encoding="utf-8") as f:
         json.dump({"languages": args.languages, "speakers": sorted(set(speakers.tolist())),
-                   "classifier": "RBF SVM (C=10, gamma=scale)", "rows": rows}, f, indent=2)
+                   "classifier": "RBF SVM", "C": args.C, "gamma_factor": args.gamma_factor,
+                   "rows": rows}, f, indent=2)
 
     fig, ax = plt.subplots(figsize=(6.5, 4))
     compressed = rows[1:]
@@ -81,8 +95,8 @@ def main():
     ax.set_ylabel("speaker-wise validation accuracy")
     ax.legend(loc="lower left")
     fig.tight_layout()
-    fig.savefig(config.RESULTS_DIR / "1c_accuracy_vs_compression.png", dpi=150)
-    print("\nSaved results/1c_sweep.json and results/1c_accuracy_vs_compression.png")
+    fig.savefig(config.RESULTS_DIR / plot_name, dpi=150)
+    print(f"\nSaved results/{json_name} and results/{plot_name}")
 
 
 if __name__ == "__main__":
