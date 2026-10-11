@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="de" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Akustisches Wählen</title>
+<style>
+  :root { --ink: #111; --muted: #555; --line: #888; --ok: #0b6b0b; --bad: #b00000; --pale: #f2f2f2; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: var(--ink); font: 18px/1.4 "Segoe UI", Arial, sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 26px; margin: 0 0 2px; }
+  .sub { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+  fieldset { border: 1px solid var(--line); margin: 0 0 14px; padding: 8px 14px 12px; min-width: 0; }
+  legend { font-weight: 600; padding: 0 6px; }
+  .fields { display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: flex-end; margin-bottom: 10px; }
+  .field { display: flex; flex-direction: column; gap: 2px; }
+  .field > span, .field > label.t { font-size: 15px; color: var(--muted); }
+  .choice label { margin-right: 16px; }
+  input[type=text], select { font: inherit; padding: 4px 8px; border: 1px solid var(--line); background: #fff; }
+  input[type=text] { width: 15ch; font-family: Consolas, "Courier New", monospace; letter-spacing: 1px; }
+  button { font: inherit; padding: 6px 22px; border: 1px solid var(--ink); background: var(--pale); cursor: pointer; }
+  button.main { background: var(--ink); color: #fff; }
+  button:disabled, select:disabled, input:disabled { opacity: 0.5; cursor: default; }
+  .big button { font-size: 24px; padding: 14px 40px; margin: 8px 12px 8px 0; }
+  .buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+  #status { margin: 8px 0 6px; min-height: 1.4em; }
+  .meter { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); }
+  #level { position: relative; flex: 1; height: 12px; border: 1px solid var(--line); background: var(--pale); }
+  #bar { height: 100%; width: 0; background: #333; }
+  #mark { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--bad); }
+  table { width: 100%; border-collapse: collapse; }
+  #live { table-layout: fixed; }
+  th, td { border: 1px solid var(--line); padding: 3px 8px; text-align: center; vertical-align: middle; }
+  th { background: var(--pale); font-weight: 600; }
+  tfoot th { text-align: left; }
+  tfoot small, th small { font-weight: normal; color: var(--muted); }
+  td.d, td.m { font: 22px/1.25 Consolas, "Courier New", monospace; }
+  td.d small { font: 14px "Segoe UI", Arial, sans-serif; color: var(--muted); }
+  td.s { font-size: 15px; color: var(--muted); }
+  tr.dial td.m { font-size: 17px; letter-spacing: 1px; word-break: break-all; }
+  tr.res td.m { font: 600 16px "Segoe UI", Arial, sans-serif; letter-spacing: 0; }
+  tr.tally td.m { font: 600 18px Consolas, "Courier New", monospace; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .dim { color: #aaa; }
+  #models td, #models th { font-size: 16px; padding: 4px 8px; }
+  #models td.l { text-align: left; }
+  .note { font-size: 15px; color: var(--muted); margin: 8px 0 0; }
+  .headline { margin: 4px 0 10px; font-size: 17px; }
+  .warn { color: var(--bad); font-size: 15px; margin-top: 6px; }
+  .offline { border: 2px solid var(--bad); color: var(--bad); padding: 8px 12px; margin: 0 0 14px; font-size: 16px; }
+  .offline code { background: var(--pale); color: var(--ink); padding: 1px 5px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 760px) { body { font-size: 16px; } td.d, td.m { font-size: 17px; } }
+</style>
+</head>
+<body>
+<main>
+  <div id="offline" class="offline" hidden>
+    Keine Verbindung zum Server. Die Datei nicht direkt öffnen. Server starten: <code>py -3.12 -m live_demo.web</code> Dann <code>http://localhost:8765</code> öffnen.<br>
+    No connection to the server. Do not open the file directly. Start the server: <code>py -3.12 -m live_demo.web</code> Then open <code>http://localhost:8765</code>.
+  </div>
+  <section id="choose">
+    <h1>Akustisches Wählen · Acoustic dialling</h1>
+    <p class="sub">Sensor Signal Processing · RPTU Kaiserslautern-Landau</p>
+    <p>Sprache wählen. · Select the language.</p>
+    <div class="big">
+      <button class="main" data-lang="de">Deutsch</button>
+      <button class="main" data-lang="en">English</button>
+    </div>
+  </section>
+
+  <section id="demo" hidden>
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="sub"></p>
+
+    <fieldset>
+      <legend data-t="input"></legend>
+      <div class="fields">
+        <div class="field"><label class="t" for="target" data-t="number"></label>
+          <input id="target" type="text" inputmode="numeric" maxlength="15" placeholder="0631123456" autocomplete="off"></div>
+        <div class="field"><label class="t" for="voice" data-t="voice"></label><select id="voice"></select></div>
+        <div class="field"><span data-t="source"></span>
+          <span class="choice"><label><input type="radio" name="src" value="mic" checked> <span data-t="mic"></span></label><label><input type="radio" name="src" value="sim"> <span data-t="sim"></span></label></span></div>
+        <div class="buttons">
+          <button id="start" class="main" data-t="start"></button>
+          <button id="stop" data-t="stop" disabled></button>
+          <button id="back" data-t="back"></button>
+        </div>
+      </div>
+      <div id="status"></div>
+      <div class="meter"><span data-t="level"></span><div id="level"><div id="bar"></div><div id="mark"></div></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend data-t="output"></legend>
+      <table id="live"></table>
+      <div id="warn" class="warn"></div>
+      <p class="note" data-t="pizzaNote"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend data-t="modelsTitle"></legend>
+      <div id="headline"></div>
+      <table id="models"></table>
+      <p class="note" id="footnote"></p>
+      <p class="note" id="voices"></p>
+      <p class="note" id="missing"></p>
+    </fieldset>
+  </section>
+</main>
+
+<script>
+"use strict";
+const TEXT = {
+  de: {
+    title: "Akustisches Wählen: der Pizza-Test", sub: "Sensor Signal Processing · RPTU Kaiserslautern-Landau",
+    input: "Eingabe", output: "Ausgabe", modelsTitle: "Modelle",
+    number: "Zu wählende Nummer", voice: "Stimme", source: "Quelle", mic: "Mikrofon", sim: "Aufnahmen (Simulation)",
+    voiceNew: "Neue Stimme (nicht im Training)", voiceTraining: "Trainingsstimme",
+    start: "Start", stop: "Stopp", back: "Sprache ändern", level: "Pegel",
+    expected: "Erwartet", length: "Wortlänge (s)", default: "Standard", tuned: "Abgestimmt",
+    dialled: "Gewählte Nummer", target: "Soll", result: "Pizza-Test, dieser Durchgang",
+    pass: "✓ bestanden", fail: "✗ nicht bestanden", incomplete: "Unvollständig",
+    tallyNew: "Richtige Nummern, neue Stimme", tallyTraining: "Richtige Nummern, Trainingsstimme",
+    pizzaNote: "Pizza-Test: Eine falsche Ziffer wählt den falschen Laden. Zähler: richtige Nummern / Durchgänge.",
+    idle: "Nummer eingeben. Dann auf Start klicken.",
+    calibrating: "Bitte nicht sprechen. Das System misst 1 Sekunde lang das Raumgeräusch.",
+    listening: "Eine Ziffer sprechen. Kurz warten. Dann die nächste Ziffer sprechen.",
+    simulating: "Das System spielt Aufnahmen von {s} ab.",
+    logSaved: "Protokoll: {p}", logFailed: "Protokoll nicht gespeichert: {m}",
+    finished: "Fertig.", stopped: "Gestoppt.", error: "Fehler: {m}", badNumber: "Nur Ziffern eingeben (1 bis 15).",
+    busy: "Ein Durchgang läuft. Zuerst auf Stopp klicken.", unknown: "Unbekannte Sprache oder unbekannte Stimme.",
+    noModel: "Kein Modell: zuerst trainieren.", noData: "Zuerst `py -3.12 -m common.prepare_data` ausführen.",
+    mismatch: "Achtung: {m}", missing: "Kein Modell für: {m}.",
+    hApproach: "Verfahren", hSettings: "Einstellungen", hClassifier: "Klassifikator", hValues: "Werte pro Wort",
+    hSmaller: "Kleiner als das volle Spektrogramm", hVal: "Validierung", hTest: "Test (±95 %)",
+    hDVal: "Δ Validierung", hDTest: "Δ Test",
+    headline: "{s}: 1.c nutzt {x}-mal weniger Werte pro Wort als 1.b ({c} statt {b}). Validierung {dv} Pp., Test {dt} Pp. Gleicher Klassifikator: {k}.",
+    footnote: "Validierung: sprecherweise Kreuzvalidierung mit den Trainingsstimmen. Test: ein Durchlauf mit dem Testsprecher. Der ±-Wert zeigt das ungefähre 95-%-Intervall für {n} Testwörter. Δ = 1.c minus 1.b in Prozentpunkten (Pp.), nur bei gleichem Klassifikator.",
+    voices: "Training: {tr} ({ntr} Wörter). Test: {te} ({nte} Wörter), einmal getestet.",
+    short: { "1a": "1.a FFT + DR", "1b": "1.b Spektrogramm", "1c": "1.c Spektrogramm, komprimiert" },
+    names: { "1a": "1.a FFT + Dimensionsreduktion", "1b": "1.b Spektrogramm", "1c": "1.c Komprimiertes Spektrogramm (2-D-DCT)" },
+    words: ["null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"],
+  },
+  en: {
+    title: "Acoustic dialling: the pizza test", sub: "Sensor Signal Processing · RPTU Kaiserslautern-Landau",
+    input: "Input", output: "Output", modelsTitle: "Models",
+    number: "Number to dial", voice: "Voice", source: "Source", mic: "Microphone", sim: "Recordings (simulation)",
+    voiceNew: "New voice (not in the training)", voiceTraining: "Training voice",
+    start: "Start", stop: "Stop", back: "Change the language", level: "Level",
+    expected: "Expected", length: "Word length (s)", default: "Default", tuned: "Tuned",
+    dialled: "Dialled number", target: "Target", result: "Pizza test, this run",
+    pass: "✓ passed", fail: "✗ failed", incomplete: "Not complete",
+    tallyNew: "Correct numbers, new voice", tallyTraining: "Correct numbers, training voice",
+    pizzaNote: "Pizza test: one wrong digit dials the wrong shop. Counter: correct numbers / runs.",
+    idle: "Type the number. Then click Start.",
+    calibrating: "Do not speak. The system measures the room noise for 1 second.",
+    listening: "Say one digit. Stop for a short time. Then say the next digit.",
+    simulating: "The system plays recordings of {s}.",
+    logSaved: "Log: {p}", logFailed: "Log not saved: {m}",
+    finished: "Finished.", stopped: "Stopped.", error: "Error: {m}", badNumber: "Type digits only (1 to 15).",
+    busy: "A run is in progress. Click Stop first.", unknown: "Unknown language or voice.",
+    noModel: "No model: train it first.", noData: "First run `py -3.12 -m common.prepare_data`.",
+    mismatch: "Caution: {m}", missing: "No model for: {m}.",
+    hApproach: "Approach", hSettings: "Settings", hClassifier: "Classifier", hValues: "Values per word",
+    hSmaller: "Smaller than the full spectrogram", hVal: "Validation", hTest: "Test (±95 %)",
+    hDVal: "Δ validation", hDTest: "Δ test",
+    headline: "{s}: 1.c uses {x} times fewer values per word than 1.b ({c} instead of {b}). Validation {dv} pp, test {dt} pp. Same classifier: {k}.",
+    footnote: "Validation: speaker-wise cross-validation on the training voices. Test: one run on the test speaker. The ± value shows the approximate 95 % interval for {n} test words. Δ = 1.c minus 1.b, in percentage points (pp), for the same classifier only.",
+    voices: "Training: {tr} ({ntr} words). Test: {te} ({nte} words), tested once.",
+    short: { "1a": "1.a FFT + DR", "1b": "1.b Spectrogram", "1c": "1.c Compressed spectrogram" },
+    names: { "1a": "1.a FFT + dimensionality reduction", "1b": "1.b Spectrogram", "1c": "1.c Compressed spectrogram (2-D DCT)" },
+    words: ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"],
+  },
+};
+const $ = (id) => document.getElementById(id);
+const state = { lang: "de", info: null, models: [], target: "", heard: {}, done: false, complete: false, running: false, tally: {} };
+const t = (key, args = {}) => TEXT[state.lang][key].replace(/\{(\w+)\}/g, (_, k) => args[k] ?? "");
+const locale = () => (state.lang === "de" ? "de-DE" : "en-GB");
+const num = (x, d = 1) => x.toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
+const int = (x) => x.toLocaleString(locale());
+const pct = (x) => (x == null ? "–" : `${num(x * 100)} %`);
+const signed = (x) => `${x >= 0 ? "+" : "−"}${num(Math.abs(x * 100))}`;
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const setStatus = (text) => { $("status").textContent = text; };
+const offline = (on) => { $("offline").hidden = !on; };
+const find = (approach, settings) => state.models.find((m) => m.approach === approach && m.settings === settings);
+const validTarget = (s) => /^\d{1,15}$/.test(s);
+
+/* ---------- live table ---------- */
+function dialled(id) {
+  const heard = state.heard[id] || "";
+  return [...state.target].map((c, i) => (i < heard.length
+    ? `<span class="${heard[i] === c ? "ok" : "bad"}">${heard[i]}</span>` : `<span class="dim">·</span>`)).join("");
+}
+
+function verdict(id) {
+  if (!state.done) return "";
+  if (!state.complete) return `<span class="bad">${t("incomplete")}</span>`;
+  const right = state.heard[id] === state.target;
+  return `<span class="${right ? "ok" : "bad"}">${t(right ? "pass" : "fail")}</span>`;
+}
+
+function renderFoot() {
+  const ms = state.models, tally = state.tally[state.lang] || {};
+  let html = `<tr class="dial"><th colspan="3">${t("dialled")}<br><small>${t("target")}: ${state.target || "–"}</small></th>` +
+    ms.map((m) => `<td class="m">${dialled(m.id)}</td>`).join("") + `</tr>`;
+  html += `<tr class="res"><th colspan="3">${t("result")}</th>` + ms.map((m) => `<td class="m">${verdict(m.id)}</td>`).join("") + `</tr>`;
+  for (const voice of ["new", "training"]) {
+    const v = tally[voice];
+    if (v && v.runs) {
+      html += `<tr class="tally"><th colspan="3">${t(voice === "new" ? "tallyNew" : "tallyTraining")}</th>` +
+        ms.map((m) => `<td class="m">${v.counts[m.id] || 0}/${v.runs}</td>`).join("") + `</tr>`;
+    }
+  }
+  $("foot").innerHTML = html;
+}
+
+function renderTable() {
+  const ms = state.models, target = state.target;
+  const groups = [...new Set(ms.map((m) => m.approach))];
+  const head = `<tr><th rowspan="2" style="width:44px">#</th><th rowspan="2" style="width:108px">${t("expected")}</th><th rowspan="2" style="width:104px">${t("length")}</th>` +
+    groups.map((a) => `<th colspan="${ms.filter((m) => m.approach === a).length}">${TEXT[state.lang].short[a]}</th>`).join("") +
+    `</tr><tr>` + ms.map((m) => `<th>${t(m.settings)}</th>`).join("") + `</tr>`;
+  let body = "";
+  for (let i = 0; i < target.length; i++) {
+    const e = Number(target[i]);
+    body += `<tr><td>${i + 1}</td><td class="d">${e} <small>${TEXT[state.lang].words[e]}</small></td><td class="s" id="len-${i}">·</td>` +
+      ms.map((m) => `<td class="m dim" id="c-${i}-${m.id}">·</td>`).join("") + `</tr>`;
+  }
+  $("live").innerHTML = `<thead>${head}</thead><tbody>${body}</tbody><tfoot id="foot"></tfoot>`;
+  renderFoot();
+}
+
+/* ---------- model table ---------- */
+const ci = (p, n) => 1.96 * Math.sqrt((p * (1 - p)) / n);
+
+function renderModels() {
+  const ms = state.models, names = TEXT[state.lang].names;
+  const head = ["hApproach", "hSettings", "hClassifier", "hValues", "hSmaller", "hVal", "hTest", "hDVal", "hDTest"]
+    .map((k) => `<th>${t(k)}</th>`).join("");
+  let body = "", nTest = null;
+  for (const m of ms) {
+    const b = m.approach === "1c" ? find("1b", m.settings) : null;
+    const same = b && b.classifier === m.classifier && b.validation != null && m.validation != null;
+    const smaller = m.approach === "1c" ? (m.ratio ? `${num(m.ratio)}×` : "–") : m.approach === "1b" ? "1×" : "–";
+    const test = m.test == null ? "–" : `${pct(m.test)}${m.n_test ? ` (±${num(ci(m.test, m.n_test) * 100)})` : ""}`;
+    if (m.n_test) nTest = m.n_test;
+    body += `<tr><td class="l">${names[m.approach]}</td><td>${t(m.settings)}</td>` +
+      `<td>${m.classifier}${m.k ? `, k = ${m.k}` : ""}</td><td>${m.values == null ? "–" : int(m.values)}</td>` +
+      `<td>${smaller}</td><td>${pct(m.validation)}</td><td>${test}</td>` +
+      `<td>${m.approach === "1c" ? (same ? signed(m.validation - b.validation) : "–") : ""}</td>` +
+      `<td>${m.approach === "1c" ? (same && m.test != null && b.test != null ? signed(m.test - b.test) : "–") : ""}</td></tr>`;
+  }
+  $("models").innerHTML = `<thead><tr>${head}</tr></thead><tbody>${body}</tbody>`;
+
+  let lines = "";
+  for (const settings of ["tuned", "default"]) {
+    const b = find("1b", settings), c = find("1c", settings);
+    if (b && c && b.classifier === c.classifier && b.values && c.values &&
+        [b.validation, c.validation, b.test, c.test].every((x) => x != null)) {
+      lines += `<div>${t("headline", { s: t(settings), x: num(b.values / c.values), c: int(c.values), b: int(b.values),
+        dv: signed(c.validation - b.validation), dt: signed(c.test - b.test), k: c.classifier })}</div>`;
+    }
+  }
+  $("headline").className = "headline";
+  $("headline").innerHTML = lines;
+  $("footnote").textContent = nTest ? t("footnote", { n: nTest }) : "";
+  const v = state.info.voices;
+  $("voices").textContent = v ? t("voices", { tr: v.training.map(cap).join(", "), ntr: v.n_training,
+    te: v.test.map(cap).join(", "), nte: v.n_test }) : t("noData");
+  const missing = state.info.models.filter((m) => !m.available).map((m) => `${TEXT[state.lang].short[m.approach]} (${t(m.settings)})`);
+  $("missing").textContent = missing.length ? t("missing", { m: missing.join(", ") }) : "";
+  $("warn").textContent = ms.filter((m) => m.mismatch).map((m) => t("mismatch", { m: m.mismatch })).join(" ");
+}
+
+/* ---------- page flow ---------- */
+async function choose(language) {
+  state.lang = language;
+  document.documentElement.lang = language;
+  document.title = t("title");
+  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
+  try {
+    state.info = await (await fetch(`/info?language=${language}`)).json();
+  } catch (error) {
+    offline(true); return;
+  }
+  state.models = state.info.models.filter((m) => m.available);
+  const voice = $("voice");
+  voice.innerHTML = "";
+  voice.add(new Option(t("voiceNew"), "new"));
+  voice.add(new Option(t("voiceTraining"), "training"));
+  if (!$("target").value && state.info.target) $("target").value = state.info.target;
+  $("mark").style.left = `${(state.info.threshold_db / 40) * 100}%`;
+  state.target = validTarget($("target").value.trim()) ? $("target").value.trim() : "";
+  state.heard = {}; state.done = false;
+  renderTable(); renderModels();
+  setStatus(state.models.length ? t("idle") : t("noModel"));
+  setRunning(Boolean(state.info.running));
+  $("choose").hidden = true; $("demo").hidden = false;
+  $("target").focus();
+}
+
+function setRunning(on) {
+  state.running = on;
+  $("start").disabled = on; $("stop").disabled = !on;
+  for (const id of ["back", "target", "voice"]) $(id).disabled = on;
+  document.querySelectorAll("input[name=src]").forEach((r) => { r.disabled = on; });
+}
+
+async function start() {
+  const target = $("target").value.trim();
+  if (!validTarget(target)) { setStatus(t("badNumber")); return; }
+  state.target = target; state.heard = {}; state.done = false; state.complete = false;
+  for (const m of state.models) state.heard[m.id] = "";
+  renderTable(); setRunning(true);
+  let answer;
+  try {
+    answer = await (await fetch("/start", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language: state.lang, target, voice: $("voice").value,
+        simulate: document.querySelector("input[name=src]:checked").value === "sim" }) })).json();
+  } catch (error) {
+    offline(true); setRunning(false); return;
+  }
+  if (!answer.ok) { setRunning(answer.error === "busy"); setStatus(TEXT[state.lang][answer.error] ?? t("error", { m: answer.error })); }
+}
+
+function onEvent(e) {
+  if (e.type === "level") {
+    $("bar").style.width = `${Math.max(0, Math.min(100, (e.db / 40) * 100))}%`;
+  } else if (e.type === "status") {
+    setStatus(t(e.key, { s: e.speaker ? cap(e.speaker) : "" }));
+  } else if (e.type === "word") {
+    const i = e.position - 1;
+    if ($(`len-${i}`)) $(`len-${i}`).textContent = num(e.seconds, 2);
+    for (const [id, digit] of Object.entries(e.answers)) {
+      state.heard[id] = (state.heard[id] || "") + digit;
+      const cell = $(`c-${i}-${id}`);
+      if (cell) {
+        const ok = digit === e.expected;
+        cell.className = `m ${ok ? "ok" : "bad"}`;
+        cell.textContent = `${digit} ${ok ? "✓" : "✗"}`;
+      }
+    }
+    renderFoot();
+  } else if (e.type === "done") {
+    setRunning(false); $("bar").style.width = "0";
+    state.heard = e.heard; state.done = true; state.complete = e.complete;
+    if (e.counted) {                                  // every run with at least one word counts; a missed word is a failed run
+      const tally = (state.tally[state.lang] ??= {});
+      const v = (tally[e.voice] ??= { runs: 0, counts: {} });
+      v.runs += 1;
+      for (const [id, number] of Object.entries(e.heard)) if (number === e.target) v.counts[id] = (v.counts[id] || 0) + 1;
+    }
+    renderFoot(); setStatus(e.complete ? t("finished") : t("stopped"));
+  } else if (e.type === "error") {
+    setRunning(false); setStatus(t("error", { m: e.message }));
+  } else if (e.type === "log") {
+    setStatus(`${$("status").textContent} ${e.error ? t("logFailed", { m: e.error }) : t("logSaved", { p: e.path })}`);
+  }
+}
+
+document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => choose(b.dataset.lang)));
+$("start").addEventListener("click", start);
+$("stop").addEventListener("click", () => fetch("/stop", { method: "POST" }).catch(() => offline(true)));
+$("back").addEventListener("click", () => { $("demo").hidden = true; $("choose").hidden = false; });
+$("target").addEventListener("input", () => {
+  const value = $("target").value.trim();
+  if (!state.running && validTarget(value)) { state.target = value; state.heard = {}; state.done = false; renderTable(); }
+});
+$("target").addEventListener("keydown", (ev) => { if (ev.key === "Enter" && !state.running) start(); });
+const events = new EventSource("/events");
+events.onmessage = (m) => onEvent(JSON.parse(m.data));
+events.onopen = () => offline(false);
+events.onerror = () => offline(true);
+if (location.protocol === "file:") offline(true);
+</script>
+</body>
+</html>
