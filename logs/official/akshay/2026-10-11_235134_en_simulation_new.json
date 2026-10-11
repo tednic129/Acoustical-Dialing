@@ -1,0 +1,1722 @@
+{
+ "log_version": 1,
+ "run": {
+  "id": "2026-10-11_235134_en_simulation_new",
+  "started": "2026-10-11T23:51:34+02:00",
+  "ended": "2026-10-11T23:51:48+02:00",
+  "duration_s": 12.9,
+  "status": "complete",
+  "message": null,
+  "language": "en",
+  "source": "simulation",
+  "voice": "new",
+  "speaker": "tapan",
+  "input_device": null,
+  "target": "0631123456",
+  "words_expected": 10,
+  "words_detected": 10
+ },
+ "environment": {
+  "commit": "3fdd983",
+  "branch": "main",
+  "python": "3.12.10",
+  "scikit_learn": "1.6.1",
+  "numpy": "2.5.4",
+  "platform": "Windows-11-10.0.26300-SP0"
+ },
+ "settings": {
+  "settings_id": "e91785ab",
+  "models_id": "73a1c2a1",
+  "block_s": 0.1,
+  "quiet_blocks": 3,
+  "loudness_factor": 4.0,
+  "sample_rate": 16000,
+  "frame_ms": 25,
+  "hop_ms": 10,
+  "pad_ms": 50,
+  "noise_percentile": 10,
+  "energy_factor": 4.0,
+  "peak_fraction": 0.05,
+  "max_gap_ms": 250,
+  "max_word_ms": 1200,
+  "zcr_threshold": 0.3,
+  "zcr_energy_factor": 2.0,
+  "hiss_extend_ms": 200,
+  "threshold_db": 12.0,
+  "calibration_noise_rms": 0.001999,
+  "threshold_rms": 0.007998,
+  "room_during_run_db": 0.0
+ },
+ "models": {
+  "1a_default": {
+   "label": "1.a default",
+   "tag": "1a_en",
+   "classifier": "RBF SVM",
+   "k": null,
+   "values_per_word": 30,
+   "compression_ratio": null,
+   "validation_accuracy": 0.55,
+   "test_accuracy": 0.5583,
+   "n_test_words": 120,
+   "model_file": "models/1a_en_best.joblib",
+   "result_file": "results/1a_en_rbf_svm.json",
+   "model_sha256_12": "656f26bc308d",
+   "per_digit_test_accuracy": [
+    0.2,
+    0.6,
+    0.5,
+    0.7,
+    1.0,
+    0.9,
+    1.0,
+    0.5,
+    0.0,
+    0.9
+   ],
+   "test_confusion_matrix": [
+    [
+     6,
+     0,
+     1,
+     8,
+     0,
+     0,
+     14,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     6,
+     2,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     4,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     7,
+     1,
+     0,
+     0,
+     0,
+     0,
+     2
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     9,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     5,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9
+    ]
+   ]
+  },
+  "1a_tuned": {
+   "label": "1.a tuned",
+   "tag": "1a_en_tuned",
+   "classifier": "Linear SVM",
+   "k": null,
+   "values_per_word": 10,
+   "compression_ratio": null,
+   "validation_accuracy": 0.6077,
+   "test_accuracy": 0.6417,
+   "n_test_words": 120,
+   "model_file": "models/1a_en_tuned_best.joblib",
+   "result_file": "results/1a_en_tuned_linear_svm.json",
+   "model_sha256_12": "9a210895ff90",
+   "per_digit_test_accuracy": [
+    0.633,
+    0.9,
+    0.5,
+    0.4,
+    0.5,
+    0.8,
+    0.7,
+    1.0,
+    0.1,
+    0.9
+   ],
+   "test_confusion_matrix": [
+    [
+     19,
+     1,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     9,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     4,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     4,
+     2,
+     0,
+     0,
+     0,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     1,
+     8,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     3,
+     0,
+     0,
+     0,
+     0,
+     0,
+     7,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     8,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9
+    ]
+   ]
+  },
+  "1b_default": {
+   "label": "1.b default",
+   "tag": "1b_en",
+   "classifier": "Linear SVM",
+   "k": null,
+   "values_per_word": 12850,
+   "compression_ratio": null,
+   "validation_accuracy": 0.7014,
+   "test_accuracy": 0.8333,
+   "n_test_words": 120,
+   "model_file": "models/1b_en_best.joblib",
+   "result_file": "results/1b_en_linear_svm.json",
+   "model_sha256_12": "d83042eaa9a7",
+   "per_digit_test_accuracy": [
+    0.833,
+    1.0,
+    1.0,
+    0.7,
+    0.9,
+    0.4,
+    1.0,
+    0.9,
+    0.9,
+    0.7
+   ],
+   "test_confusion_matrix": [
+    [
+     25,
+     0,
+     1,
+     3,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     2,
+     7,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     0,
+     0,
+     3,
+     4,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9,
+     0
+    ],
+    [
+     0,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     7
+    ]
+   ]
+  },
+  "1b_tuned": {
+   "label": "1.b tuned",
+   "tag": "1b_en_tuned",
+   "classifier": "RBF SVM",
+   "k": null,
+   "values_per_word": 12850,
+   "compression_ratio": null,
+   "validation_accuracy": 0.7114,
+   "test_accuracy": 0.825,
+   "n_test_words": 120,
+   "model_file": "models/1b_en_tuned_best.joblib",
+   "result_file": "results/1b_en_tuned_rbf_svm.json",
+   "model_sha256_12": "813e19b2230d",
+   "per_digit_test_accuracy": [
+    0.833,
+    1.0,
+    1.0,
+    0.6,
+    0.9,
+    0.4,
+    1.0,
+    0.9,
+    1.0,
+    0.6
+   ],
+   "test_confusion_matrix": [
+    [
+     25,
+     0,
+     1,
+     3,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     2,
+     6,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     1,
+     4,
+     0,
+     4,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0
+    ],
+    [
+     0,
+     3,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     6
+    ]
+   ]
+  },
+  "1c_default": {
+   "label": "1.c default",
+   "tag": "1c_en",
+   "classifier": "RBF SVM",
+   "k": 16,
+   "values_per_word": 256,
+   "compression_ratio": 50.2,
+   "validation_accuracy": 0.6859,
+   "test_accuracy": 0.7333,
+   "n_test_words": 120,
+   "model_file": "models/1c_en_best.joblib",
+   "result_file": "results/1c_en_rbf_svm.json",
+   "model_sha256_12": "8b03e066ef31",
+   "per_digit_test_accuracy": [
+    0.767,
+    0.9,
+    0.9,
+    0.8,
+    0.8,
+    0.3,
+    1.0,
+    0.8,
+    0.4,
+    0.6
+   ],
+   "test_confusion_matrix": [
+    [
+     23,
+     0,
+     1,
+     5,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     9,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     9,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     8,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     8,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     6,
+     1,
+     3,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     8,
+     0,
+     0
+    ],
+    [
+     2,
+     1,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     4,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     6
+    ]
+   ]
+  },
+  "1c_tuned": {
+   "label": "1.c tuned",
+   "tag": "1c_en_tuned",
+   "classifier": "RBF SVM",
+   "k": 12,
+   "values_per_word": 144,
+   "compression_ratio": 89.2,
+   "validation_accuracy": 0.7418,
+   "test_accuracy": 0.75,
+   "n_test_words": 120,
+   "model_file": "models/1c_en_tuned_best.joblib",
+   "result_file": "results/1c_en_tuned_rbf_svm.json",
+   "model_sha256_12": "505b3a71e596",
+   "per_digit_test_accuracy": [
+    0.767,
+    1.0,
+    0.9,
+    0.5,
+    0.9,
+    0.6,
+    0.7,
+    0.7,
+    1.0,
+    0.4
+   ],
+   "test_confusion_matrix": [
+    [
+     23,
+     0,
+     1,
+     6,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     9,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     5,
+     0,
+     1,
+     0,
+     0,
+     2,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     4,
+     6,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     3,
+     0,
+     0,
+     7,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     7,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0
+    ],
+    [
+     0,
+     3,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     3,
+     4
+    ]
+   ]
+  }
+ },
+ "split": {
+  "training": [
+   "akshay",
+   "maulik"
+  ],
+  "n_training": 210,
+  "test": [
+   "tapan"
+  ],
+  "n_test": 120,
+  "word_length_s": {
+   "min": 0.25,
+   "median": 0.61,
+   "p95": 0.87,
+   "max": 1.28
+  }
+ },
+ "words": [
+  {
+   "first": 11,
+   "last": 16,
+   "start_s": 1.1,
+   "end_s": 1.7,
+   "segment_s": 1.0,
+   "peak_db": 42.0,
+   "index": 1,
+   "length_s": 0.73,
+   "answers": {
+    "1a_default": 6,
+    "1a_tuned": 6,
+    "1b_default": 0,
+    "1b_tuned": 0,
+    "1c_default": 3,
+    "1c_tuned": 3
+   },
+   "predict_ms": {
+    "1a_default": 1.56,
+    "1a_tuned": 1.02,
+    "1b_default": 14.77,
+    "1b_tuned": 17.29,
+    "1c_default": 2.09,
+    "1c_tuned": 1.76
+   },
+   "target_position": 1,
+   "expected": 0
+  },
+  {
+   "first": 24,
+   "last": 30,
+   "start_s": 2.4,
+   "end_s": 3.1,
+   "segment_s": 1.1,
+   "peak_db": 40.1,
+   "index": 2,
+   "length_s": 0.81,
+   "answers": {
+    "1a_default": 6,
+    "1a_tuned": 6,
+    "1b_default": 6,
+    "1b_tuned": 6,
+    "1c_default": 6,
+    "1c_tuned": 6
+   },
+   "predict_ms": {
+    "1a_default": 1.16,
+    "1a_tuned": 0.62,
+    "1b_default": 9.09,
+    "1b_tuned": 10.74,
+    "1c_default": 1.61,
+    "1c_tuned": 1.52
+   },
+   "target_position": 2,
+   "expected": 6
+  },
+  {
+   "first": 37,
+   "last": 41,
+   "start_s": 3.7,
+   "end_s": 4.2,
+   "segment_s": 0.9,
+   "peak_db": 41.3,
+   "index": 3,
+   "length_s": 0.54,
+   "answers": {
+    "1a_default": 3,
+    "1a_tuned": 3,
+    "1b_default": 3,
+    "1b_tuned": 3,
+    "1c_default": 1,
+    "1c_tuned": 3
+   },
+   "predict_ms": {
+    "1a_default": 1.56,
+    "1a_tuned": 1.06,
+    "1b_default": 10.74,
+    "1b_tuned": 10.79,
+    "1c_default": 1.42,
+    "1c_tuned": 1.12
+   },
+   "target_position": 3,
+   "expected": 3
+  },
+  {
+   "first": 49,
+   "last": 53,
+   "start_s": 4.9,
+   "end_s": 5.4,
+   "segment_s": 0.9,
+   "peak_db": 40.3,
+   "index": 4,
+   "length_s": 0.6,
+   "answers": {
+    "1a_default": 1,
+    "1a_tuned": 1,
+    "1b_default": 1,
+    "1b_tuned": 1,
+    "1c_default": 1,
+    "1c_tuned": 1
+   },
+   "predict_ms": {
+    "1a_default": 1.12,
+    "1a_tuned": 0.86,
+    "1b_default": 12.37,
+    "1b_tuned": 12.86,
+    "1c_default": 1.45,
+    "1c_tuned": 1.38
+   },
+   "target_position": 4,
+   "expected": 1
+  },
+  {
+   "first": 61,
+   "last": 65,
+   "start_s": 6.1,
+   "end_s": 6.6,
+   "segment_s": 0.9,
+   "peak_db": 40.0,
+   "index": 5,
+   "length_s": 0.59,
+   "answers": {
+    "1a_default": 1,
+    "1a_tuned": 1,
+    "1b_default": 1,
+    "1b_tuned": 1,
+    "1c_default": 1,
+    "1c_tuned": 1
+   },
+   "predict_ms": {
+    "1a_default": 1.68,
+    "1a_tuned": 1.21,
+    "1b_default": 11.81,
+    "1b_tuned": 17.42,
+    "1c_default": 1.34,
+    "1c_tuned": 1.1
+   },
+   "target_position": 5,
+   "expected": 1
+  },
+  {
+   "first": 73,
+   "last": 77,
+   "start_s": 7.3,
+   "end_s": 7.8,
+   "segment_s": 0.9,
+   "peak_db": 42.4,
+   "index": 6,
+   "length_s": 0.53,
+   "answers": {
+    "1a_default": 2,
+    "1a_tuned": 4,
+    "1b_default": 2,
+    "1b_tuned": 2,
+    "1c_default": 2,
+    "1c_tuned": 2
+   },
+   "predict_ms": {
+    "1a_default": 1.11,
+    "1a_tuned": 1.09,
+    "1b_default": 13.9,
+    "1b_tuned": 18.17,
+    "1c_default": 2.0,
+    "1c_tuned": 1.62
+   },
+   "target_position": 6,
+   "expected": 2
+  },
+  {
+   "first": 84,
+   "last": 88,
+   "start_s": 8.4,
+   "end_s": 8.9,
+   "segment_s": 0.9,
+   "peak_db": 41.1,
+   "index": 7,
+   "length_s": 0.56,
+   "answers": {
+    "1a_default": 3,
+    "1a_tuned": 3,
+    "1b_default": 3,
+    "1b_tuned": 3,
+    "1c_default": 3,
+    "1c_tuned": 3
+   },
+   "predict_ms": {
+    "1a_default": 0.99,
+    "1a_tuned": 1.42,
+    "1b_default": 10.37,
+    "1b_tuned": 10.05,
+    "1c_default": 2.32,
+    "1c_tuned": 2.11
+   },
+   "target_position": 7,
+   "expected": 3
+  },
+  {
+   "first": 97,
+   "last": 99,
+   "start_s": 9.7,
+   "end_s": 10.0,
+   "segment_s": 0.7,
+   "peak_db": 41.1,
+   "index": 8,
+   "length_s": 0.46,
+   "answers": {
+    "1a_default": 4,
+    "1a_tuned": 2,
+    "1b_default": 4,
+    "1b_tuned": 4,
+    "1c_default": 4,
+    "1c_tuned": 4
+   },
+   "predict_ms": {
+    "1a_default": 1.03,
+    "1a_tuned": 1.52,
+    "1b_default": 16.0,
+    "1b_tuned": 15.62,
+    "1c_default": 1.32,
+    "1c_tuned": 0.95
+   },
+   "target_position": 8,
+   "expected": 4
+  },
+  {
+   "first": 108,
+   "last": 111,
+   "start_s": 10.8,
+   "end_s": 11.2,
+   "segment_s": 0.8,
+   "peak_db": 41.7,
+   "index": 9,
+   "length_s": 0.55,
+   "answers": {
+    "1a_default": 5,
+    "1a_tuned": 5,
+    "1b_default": 4,
+    "1b_tuned": 4,
+    "1c_default": 3,
+    "1c_tuned": 1
+   },
+   "predict_ms": {
+    "1a_default": 1.46,
+    "1a_tuned": 1.49,
+    "1b_default": 12.16,
+    "1b_tuned": 10.16,
+    "1c_default": 1.4,
+    "1c_tuned": 1.9
+   },
+   "target_position": 9,
+   "expected": 5
+  },
+  {
+   "first": 119,
+   "last": 125,
+   "start_s": 11.9,
+   "end_s": 12.6,
+   "segment_s": 1.1,
+   "peak_db": 41.1,
+   "index": 10,
+   "length_s": 0.8,
+   "answers": {
+    "1a_default": 6,
+    "1a_tuned": 6,
+    "1b_default": 6,
+    "1b_tuned": 6,
+    "1c_default": 6,
+    "1c_tuned": 6
+   },
+   "predict_ms": {
+    "1a_default": 1.29,
+    "1a_tuned": 1.15,
+    "1b_default": 10.28,
+    "1b_tuned": 11.1,
+    "1c_default": 2.41,
+    "1c_tuned": 2.42
+   },
+   "target_position": 10,
+   "expected": 6
+  }
+ ],
+ "refused_sounds": [],
+ "alignment": [
+  {
+   "kind": "match",
+   "target": 0,
+   "word": 0
+  },
+  {
+   "kind": "match",
+   "target": 1,
+   "word": 1
+  },
+  {
+   "kind": "match",
+   "target": 2,
+   "word": 2
+  },
+  {
+   "kind": "match",
+   "target": 3,
+   "word": 3
+  },
+  {
+   "kind": "match",
+   "target": 4,
+   "word": 4
+  },
+  {
+   "kind": "match",
+   "target": 5,
+   "word": 5
+  },
+  {
+   "kind": "match",
+   "target": 6,
+   "word": 6
+  },
+  {
+   "kind": "match",
+   "target": 7,
+   "word": 7
+  },
+  {
+   "kind": "match",
+   "target": 8,
+   "word": 8
+  },
+  {
+   "kind": "match",
+   "target": 9,
+   "word": 9
+  }
+ ],
+ "missed": [],
+ "extra": [],
+ "per_model": {
+  "1a_default": {
+   "dialled": "6631123456",
+   "pizza_passed": false,
+   "digits_right": 9,
+   "digits_wrong": 1,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    9,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 1,
+     "expected": 0,
+     "heard": 6,
+     "word": 1,
+     "length_s": 0.73,
+     "peak_db": 42.0,
+     "notes": [],
+     "test_confusions": 14,
+     "test_words_of_digit": 30,
+     "test_accuracy_of_digit": 0.2
+    }
+   ],
+   "chance_of_correct_number": 0.0029
+  },
+  "1a_tuned": {
+   "dialled": "6631143256",
+   "pizza_passed": false,
+   "digits_right": 7,
+   "digits_wrong": 3,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    7,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 1,
+     "expected": 0,
+     "heard": 6,
+     "word": 1,
+     "length_s": 0.73,
+     "peak_db": 42.0,
+     "notes": [],
+     "test_confusions": 10,
+     "test_words_of_digit": 30,
+     "test_accuracy_of_digit": 0.633
+    },
+    {
+     "position": 6,
+     "expected": 2,
+     "heard": 4,
+     "word": 6,
+     "length_s": 0.53,
+     "peak_db": 42.4,
+     "notes": [],
+     "test_confusions": 4,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.5
+    },
+    {
+     "position": 8,
+     "expected": 4,
+     "heard": 2,
+     "word": 8,
+     "length_s": 0.46,
+     "peak_db": 41.1,
+     "notes": [],
+     "test_confusions": 5,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.5
+    }
+   ],
+   "chance_of_correct_number": 0.0118
+  },
+  "1b_default": {
+   "dialled": "0631123446",
+   "pizza_passed": false,
+   "digits_right": 9,
+   "digits_wrong": 1,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    9,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 9,
+     "expected": 5,
+     "heard": 4,
+     "word": 9,
+     "length_s": 0.55,
+     "peak_db": 41.7,
+     "notes": [],
+     "test_confusions": 3,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.4
+    }
+   ],
+   "chance_of_correct_number": 0.1614
+  },
+  "1b_tuned": {
+   "dialled": "0631123446",
+   "pizza_passed": false,
+   "digits_right": 9,
+   "digits_wrong": 1,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    9,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 9,
+     "expected": 5,
+     "heard": 4,
+     "word": 9,
+     "length_s": 0.55,
+     "peak_db": 41.7,
+     "notes": [],
+     "test_confusions": 1,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.4
+    }
+   ],
+   "chance_of_correct_number": 0.1461
+  },
+  "1c_default": {
+   "dialled": "3611123436",
+   "pizza_passed": false,
+   "digits_right": 7,
+   "digits_wrong": 3,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    7,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 1,
+     "expected": 0,
+     "heard": 3,
+     "word": 1,
+     "length_s": 0.73,
+     "peak_db": 42.0,
+     "notes": [],
+     "test_confusions": 5,
+     "test_words_of_digit": 30,
+     "test_accuracy_of_digit": 0.767
+    },
+    {
+     "position": 3,
+     "expected": 3,
+     "heard": 1,
+     "word": 3,
+     "length_s": 0.54,
+     "peak_db": 41.3,
+     "notes": [],
+     "test_confusions": 2,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.8
+    },
+    {
+     "position": 9,
+     "expected": 5,
+     "heard": 3,
+     "word": 9,
+     "length_s": 0.55,
+     "peak_db": 41.7,
+     "notes": [],
+     "test_confusions": 6,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.3
+    }
+   ],
+   "chance_of_correct_number": 0.045
+  },
+  "1c_tuned": {
+   "dialled": "3631123416",
+   "pizza_passed": false,
+   "digits_right": 8,
+   "digits_wrong": 2,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    8,
+    10
+   ],
+   "substitutions": [
+    {
+     "position": 1,
+     "expected": 0,
+     "heard": 3,
+     "word": 1,
+     "length_s": 0.73,
+     "peak_db": 42.0,
+     "notes": [],
+     "test_confusions": 6,
+     "test_words_of_digit": 30,
+     "test_accuracy_of_digit": 0.767
+    },
+    {
+     "position": 9,
+     "expected": 5,
+     "heard": 1,
+     "word": 9,
+     "length_s": 0.55,
+     "peak_db": 41.7,
+     "notes": [],
+     "test_confusions": 0,
+     "test_words_of_digit": 10,
+     "test_accuracy_of_digit": 0.6
+    }
+   ],
+   "chance_of_correct_number": 0.0563
+  }
+ },
+ "levels_db": [
+  0.1,
+  -0.2,
+  -0.0,
+  -0.0,
+  -0.1,
+  -0.0,
+  0.1,
+  0.1,
+  -0.0,
+  0.2,
+  7.8,
+  29.1,
+  38.4,
+  41.1,
+  42.0,
+  39.5,
+  26.5,
+  3.4,
+  0.0,
+  -0.3,
+  -0.1,
+  0.2,
+  -0.1,
+  2.5,
+  24.4,
+  34.4,
+  40.1,
+  29.0,
+  32.3,
+  28.4,
+  15.4,
+  1.1,
+  0.0,
+  -0.1,
+  0.1,
+  0.0,
+  -0.3,
+  14.1,
+  41.3,
+  39.4,
+  28.4,
+  22.1,
+  10.8,
+  -0.1,
+  0.2,
+  0.3,
+  -0.0,
+  0.0,
+  3.8,
+  29.9,
+  40.3,
+  38.8,
+  32.2,
+  25.0,
+  9.8,
+  -0.2,
+  -0.1,
+  0.1,
+  -0.2,
+  -0.1,
+  1.1,
+  32.5,
+  40.0,
+  38.5,
+  32.0,
+  20.6,
+  7.0,
+  0.0,
+  0.0,
+  -0.3,
+  -0.1,
+  0.2,
+  4.6,
+  42.0,
+  42.4,
+  37.0,
+  28.4,
+  17.1,
+  0.2,
+  -0.1,
+  -0.0,
+  0.3,
+  0.0,
+  -0.2,
+  27.9,
+  41.1,
+  37.5,
+  27.9,
+  20.4,
+  9.1,
+  0.3,
+  0.1,
+  -0.1,
+  -0.3,
+  -0.1,
+  0.8,
+  6.5,
+  41.1,
+  39.1,
+  26.9,
+  10.2,
+  -0.1,
+  0.2,
+  -0.0,
+  -0.1,
+  -0.1,
+  0.0,
+  9.5,
+  16.3,
+  41.7,
+  35.9,
+  24.4,
+  9.7,
+  -0.0,
+  0.2,
+  -0.1,
+  0.0,
+  0.3,
+  4.1,
+  15.5,
+  21.0,
+  41.1,
+  25.4,
+  26.7,
+  25.9,
+  22.2,
+  2.6,
+  0.2,
+  0.1
+ ],
+ "typical_gap_s": 0.7,
+ "checks": [
+  {
+   "id": "C1",
+   "brief": "§2",
+   "expected": "The live loop runs from audio to dialled number.",
+   "status": "PASS",
+   "what": "Audio → event detection → features → classification → digit shown → number assembled. 10 word(s) went through the loop."
+  },
+  {
+   "id": "C2",
+   "brief": "§2, §3",
+   "expected": "Event detection finds every spoken digit (energy + zero-crossing rate).",
+   "status": "PASS",
+   "what": "10 word(s) detected for 10 digit(s)."
+  },
+  {
+   "id": "C3",
+   "brief": "§2",
+   "expected": "All three approaches classify each word live (default and tuned).",
+   "status": "PASS",
+   "what": "6 models answered every word."
+  },
+  {
+   "id": "C4",
+   "brief": "§2",
+   "expected": "The digit is shown in real time.",
+   "status": "INFO",
+   "what": "The loop closes a word after 0.3 s of quiet. Then each model needs at most 18.2 ms to answer."
+  },
+  {
+   "id": "C5",
+   "brief": "§1",
+   "expected": "Pizza test: the dialled number equals the target (one wrong digit = wrong shop).",
+   "status": "FAIL",
+   "what": "Target 0631123456. Passed: none. Failed: 1.a default, 1.a tuned, 1.b default, 1.b tuned, 1.c default, 1.c tuned."
+  },
+  {
+   "id": "C6",
+   "brief": "§5.2",
+   "expected": "A new speaker is tested (no leakage of voices between training and test).",
+   "status": "PASS",
+   "what": "The recordings of tapan are not in the training set."
+  },
+  {
+   "id": "C7",
+   "brief": "§1, §7",
+   "expected": "Per-digit errors compound: a number needs every digit right.",
+   "status": "INFO",
+   "what": "Chance of a correct 10-digit number from the test accuracy (one run cannot confirm it): 1.a default 0.3 %; 1.a tuned 1.2 %; 1.b default 16.1 %; 1.b tuned 14.6 %; 1.c default 4.5 %; 1.c tuned 5.6 %. Observed: 0 of 6 models correct."
+  },
+  {
+   "id": "C8",
+   "brief": "§5.6",
+   "expected": "1.c reports accuracy AND data-size reduction against 1.b (same classifier).",
+   "status": "INFO",
+   "what": "tuned: 89.2× fewer values (144 instead of 12850), validation +3.0 pp, test -7.5 pp (both RBF SVM); default: not comparable, the classifiers differ (Linear SVM against RBF SVM)"
+  },
+  {
+   "id": "C9",
+   "brief": "§6",
+   "expected": "The same code runs the simulation and the microphone.",
+   "status": "INFO",
+   "what": "Source: recordings (simulation). Both sources use the loop in live_demo/web.py (blocks of 0.1 s, threshold 4× the room noise, word ends after 3 quiet blocks)."
+  },
+  {
+   "id": "C10",
+   "brief": "Tuning Protocol",
+   "expected": "The loop settings and models stay the same during the pizza test.",
+   "status": "INFO",
+   "what": "Settings ID e91785ab (loop and event-extraction settings), models ID 73a1c2a1 (model files). Compare both with the other runs in summary.md."
+  }
+ ]
+}
