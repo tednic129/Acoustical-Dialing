@@ -1,0 +1,1211 @@
+{
+ "approach": "1a",
+ "languages": [
+  "de"
+ ],
+ "fft_bands": 128,
+ "training_speakers": [
+  "akshay",
+  "maulik"
+ ],
+ "tie_rule": "Within 0.01 of the best validation accuracy, take the simplest setting. Protocol order: smaller C, larger k, then fewer components (LDA counts as 9). Not covered by the protocol, fixed here: uniform before distance weights, and for the RBF SVM the smaller gamma factor after C.",
+ "chosen": {
+  "kNN": {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.5123,
+   "std_validation_accuracy": 0.0423
+  },
+  "Linear SVM": {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.5391,
+   "std_validation_accuracy": 0.0791
+  },
+  "RBF SVM": {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 1,
+    "svc__gamma": 0.005
+   },
+   "mean_validation_accuracy": 0.5264,
+   "std_validation_accuracy": 0.0464
+  }
+ },
+ "combinations": [
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4686,
+   "std_validation_accuracy": 0.0586
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.4832,
+   "std_validation_accuracy": 0.0532
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4782,
+   "std_validation_accuracy": 0.0582
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4777,
+   "std_validation_accuracy": 0.0677
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4686,
+   "std_validation_accuracy": 0.0586
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.4832,
+   "std_validation_accuracy": 0.0532
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4782,
+   "std_validation_accuracy": 0.0582
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4777,
+   "std_validation_accuracy": 0.0677
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.5068,
+   "std_validation_accuracy": 0.0568
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.5068,
+   "std_validation_accuracy": 0.0568
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.5123,
+   "std_validation_accuracy": 0.0423
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.5205,
+   "std_validation_accuracy": 0.0705
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4841,
+   "std_validation_accuracy": 0.0341
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.5023,
+   "std_validation_accuracy": 0.0523
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.5027,
+   "std_validation_accuracy": 0.0427
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4923,
+   "std_validation_accuracy": 0.0623
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4614,
+   "std_validation_accuracy": 0.0114
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.4791,
+   "std_validation_accuracy": 0.0391
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4745,
+   "std_validation_accuracy": 0.0345
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4832,
+   "std_validation_accuracy": 0.0532
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4655,
+   "std_validation_accuracy": 0.0255
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.4745,
+   "std_validation_accuracy": 0.0345
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4791,
+   "std_validation_accuracy": 0.0391
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4786,
+   "std_validation_accuracy": 0.0486
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.465,
+   "std_validation_accuracy": 0.035
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.4459,
+   "std_validation_accuracy": 0.0359
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4555,
+   "std_validation_accuracy": 0.0355
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "uniform",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4505,
+   "std_validation_accuracy": 0.0405
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 10
+   },
+   "mean_validation_accuracy": 0.4605,
+   "std_validation_accuracy": 0.0305
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 20
+   },
+   "mean_validation_accuracy": 0.465,
+   "std_validation_accuracy": 0.035
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 30
+   },
+   "mean_validation_accuracy": 0.4655,
+   "std_validation_accuracy": 0.0255
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "PCA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "distance",
+    "pca__n_components": 40
+   },
+   "mean_validation_accuracy": 0.4505,
+   "std_validation_accuracy": 0.0405
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 0.0001
+   },
+   "mean_validation_accuracy": 0.4218,
+   "std_validation_accuracy": 0.0582
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 0.001
+   },
+   "mean_validation_accuracy": 0.4214,
+   "std_validation_accuracy": 0.0486
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.5391,
+   "std_validation_accuracy": 0.0791
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 0.1
+   },
+   "mean_validation_accuracy": 0.4936,
+   "std_validation_accuracy": 0.0336
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 1
+   },
+   "mean_validation_accuracy": 0.4936,
+   "std_validation_accuracy": 0.0336
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 0.0001
+   },
+   "mean_validation_accuracy": 0.4359,
+   "std_validation_accuracy": 0.0541
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 0.001
+   },
+   "mean_validation_accuracy": 0.4309,
+   "std_validation_accuracy": 0.0491
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.5118,
+   "std_validation_accuracy": 0.0518
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 0.1
+   },
+   "mean_validation_accuracy": 0.5036,
+   "std_validation_accuracy": 0.0236
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 1
+   },
+   "mean_validation_accuracy": 0.5036,
+   "std_validation_accuracy": 0.0236
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 0.0001
+   },
+   "mean_validation_accuracy": 0.4359,
+   "std_validation_accuracy": 0.0541
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 0.001
+   },
+   "mean_validation_accuracy": 0.4359,
+   "std_validation_accuracy": 0.0541
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.5073,
+   "std_validation_accuracy": 0.0473
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 0.1
+   },
+   "mean_validation_accuracy": 0.5218,
+   "std_validation_accuracy": 0.0418
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 1
+   },
+   "mean_validation_accuracy": 0.5218,
+   "std_validation_accuracy": 0.0418
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 0.0001
+   },
+   "mean_validation_accuracy": 0.4359,
+   "std_validation_accuracy": 0.0541
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 0.001
+   },
+   "mean_validation_accuracy": 0.4309,
+   "std_validation_accuracy": 0.0491
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.5073,
+   "std_validation_accuracy": 0.0473
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 0.1
+   },
+   "mean_validation_accuracy": 0.5082,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 1
+   },
+   "mean_validation_accuracy": 0.5082,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 1,
+    "svc__gamma": 0.01
+   },
+   "mean_validation_accuracy": 0.5155,
+   "std_validation_accuracy": 0.0755
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 1,
+    "svc__gamma": 0.1
+   },
+   "mean_validation_accuracy": 0.2882,
+   "std_validation_accuracy": 0.0482
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 1,
+    "svc__gamma": 1.0
+   },
+   "mean_validation_accuracy": 0.1091,
+   "std_validation_accuracy": 0.0091
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 10,
+    "svc__gamma": 0.01
+   },
+   "mean_validation_accuracy": 0.5014,
+   "std_validation_accuracy": 0.0714
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 10,
+    "svc__gamma": 0.1
+   },
+   "mean_validation_accuracy": 0.2882,
+   "std_validation_accuracy": 0.0482
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 10,
+    "svc__gamma": 1.0
+   },
+   "mean_validation_accuracy": 0.1136,
+   "std_validation_accuracy": 0.0136
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 100,
+    "svc__gamma": 0.01
+   },
+   "mean_validation_accuracy": 0.5014,
+   "std_validation_accuracy": 0.0714
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 100,
+    "svc__gamma": 0.1
+   },
+   "mean_validation_accuracy": 0.2882,
+   "std_validation_accuracy": 0.0482
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 10,
+    "svc__C": 100,
+    "svc__gamma": 1.0
+   },
+   "mean_validation_accuracy": 0.1136,
+   "std_validation_accuracy": 0.0136
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 1,
+    "svc__gamma": 0.005
+   },
+   "mean_validation_accuracy": 0.5264,
+   "std_validation_accuracy": 0.0464
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 1,
+    "svc__gamma": 0.05
+   },
+   "mean_validation_accuracy": 0.28,
+   "std_validation_accuracy": 0.02
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 1,
+    "svc__gamma": 0.5
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 10,
+    "svc__gamma": 0.005
+   },
+   "mean_validation_accuracy": 0.5032,
+   "std_validation_accuracy": 0.0332
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 10,
+    "svc__gamma": 0.05
+   },
+   "mean_validation_accuracy": 0.2895,
+   "std_validation_accuracy": 0.0195
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 10,
+    "svc__gamma": 0.5
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 100,
+    "svc__gamma": 0.005
+   },
+   "mean_validation_accuracy": 0.5032,
+   "std_validation_accuracy": 0.0332
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 100,
+    "svc__gamma": 0.05
+   },
+   "mean_validation_accuracy": 0.2895,
+   "std_validation_accuracy": 0.0195
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 20,
+    "svc__C": 100,
+    "svc__gamma": 0.5
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 1,
+    "svc__gamma": 0.0033333333333333335
+   },
+   "mean_validation_accuracy": 0.5086,
+   "std_validation_accuracy": 0.0186
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 1,
+    "svc__gamma": 0.03333333333333333
+   },
+   "mean_validation_accuracy": 0.3841,
+   "std_validation_accuracy": 0.0341
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 1,
+    "svc__gamma": 0.3333333333333333
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 10,
+    "svc__gamma": 0.0033333333333333335
+   },
+   "mean_validation_accuracy": 0.5077,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 10,
+    "svc__gamma": 0.03333333333333333
+   },
+   "mean_validation_accuracy": 0.3891,
+   "std_validation_accuracy": 0.0291
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 10,
+    "svc__gamma": 0.3333333333333333
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 100,
+    "svc__gamma": 0.0033333333333333335
+   },
+   "mean_validation_accuracy": 0.5077,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 100,
+    "svc__gamma": 0.03333333333333333
+   },
+   "mean_validation_accuracy": 0.3891,
+   "std_validation_accuracy": 0.0291
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 30,
+    "svc__C": 100,
+    "svc__gamma": 0.3333333333333333
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 1,
+    "svc__gamma": 0.0025
+   },
+   "mean_validation_accuracy": 0.4905,
+   "std_validation_accuracy": 0.0005
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 1,
+    "svc__gamma": 0.025
+   },
+   "mean_validation_accuracy": 0.4405,
+   "std_validation_accuracy": 0.0505
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 1,
+    "svc__gamma": 0.25
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 10,
+    "svc__gamma": 0.0025
+   },
+   "mean_validation_accuracy": 0.5077,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 10,
+    "svc__gamma": 0.025
+   },
+   "mean_validation_accuracy": 0.4405,
+   "std_validation_accuracy": 0.0505
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 10,
+    "svc__gamma": 0.25
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 100,
+    "svc__gamma": 0.0025
+   },
+   "mean_validation_accuracy": 0.5077,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 100,
+    "svc__gamma": 0.025
+   },
+   "mean_validation_accuracy": 0.4405,
+   "std_validation_accuracy": 0.0505
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "PCA",
+   "params": {
+    "pca__n_components": 40,
+    "svc__C": 100,
+    "svc__gamma": 0.25
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "uniform"
+   },
+   "mean_validation_accuracy": 0.4918,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 1,
+    "kneighborsclassifier__weights": "distance"
+   },
+   "mean_validation_accuracy": 0.4918,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "uniform"
+   },
+   "mean_validation_accuracy": 0.4918,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 3,
+    "kneighborsclassifier__weights": "distance"
+   },
+   "mean_validation_accuracy": 0.4918,
+   "std_validation_accuracy": 0.0282
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "uniform"
+   },
+   "mean_validation_accuracy": 0.4923,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 5,
+    "kneighborsclassifier__weights": "distance"
+   },
+   "mean_validation_accuracy": 0.4923,
+   "std_validation_accuracy": 0.0377
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "uniform"
+   },
+   "mean_validation_accuracy": 0.4873,
+   "std_validation_accuracy": 0.0327
+  },
+  {
+   "classifier": "kNN",
+   "reduction": "LDA",
+   "params": {
+    "kneighborsclassifier__n_neighbors": 7,
+    "kneighborsclassifier__weights": "distance"
+   },
+   "mean_validation_accuracy": 0.4873,
+   "std_validation_accuracy": 0.0327
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 0.0001
+   },
+   "mean_validation_accuracy": 0.4777,
+   "std_validation_accuracy": 0.0323
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 0.001
+   },
+   "mean_validation_accuracy": 0.4823,
+   "std_validation_accuracy": 0.0277
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 0.01
+   },
+   "mean_validation_accuracy": 0.4823,
+   "std_validation_accuracy": 0.0277
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 0.1
+   },
+   "mean_validation_accuracy": 0.4868,
+   "std_validation_accuracy": 0.0232
+  },
+  {
+   "classifier": "Linear SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 1
+   },
+   "mean_validation_accuracy": 0.4868,
+   "std_validation_accuracy": 0.0232
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 1,
+    "svc__gamma": 0.011111111111111112
+   },
+   "mean_validation_accuracy": 0.3273,
+   "std_validation_accuracy": 0.0273
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 1,
+    "svc__gamma": 0.1111111111111111
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 1,
+    "svc__gamma": 1.1111111111111112
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 10,
+    "svc__gamma": 0.011111111111111112
+   },
+   "mean_validation_accuracy": 0.3273,
+   "std_validation_accuracy": 0.0273
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 10,
+    "svc__gamma": 0.1111111111111111
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 10,
+    "svc__gamma": 1.1111111111111112
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 100,
+    "svc__gamma": 0.011111111111111112
+   },
+   "mean_validation_accuracy": 0.3273,
+   "std_validation_accuracy": 0.0273
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 100,
+    "svc__gamma": 0.1111111111111111
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  },
+  {
+   "classifier": "RBF SVM",
+   "reduction": "LDA",
+   "params": {
+    "svc__C": 100,
+    "svc__gamma": 1.1111111111111112
+   },
+   "mean_validation_accuracy": 0.1,
+   "std_validation_accuracy": 0.0
+  }
+ ]
+}
