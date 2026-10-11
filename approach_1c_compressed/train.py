@@ -41,10 +41,11 @@ def main():
     parser.add_argument("--tuned", action="store_true",
                         help="final run: save under the tag 1c_tuned (once only)")
     args = parser.parse_args()
-    tag = "1c_tuned" if args.tuned else "1c"
+    lang = "1c" if list(args.languages) == ["de"] else "1c_" + "_".join(args.languages)
+    tag = lang + ("_tuned" if args.tuned else "")
     gamma = "scale" if args.gamma_factor is None else args.gamma_factor / (args.k * args.k)
-    if args.tuned and list(config.RESULTS_DIR.glob("1c_tuned_*.json")):
-        raise SystemExit("results/1c_tuned_*.json already exist: the tuned test runs only once.")
+    if args.tuned and list(config.RESULTS_DIR.glob(f"{tag}_*.json")):
+        raise SystemExit(f"results/{tag}_*.json already exist: the tuned test runs only once.")
 
     data = load_processed(languages=args.languages)
     train, test = split_masks(data["speakers"])

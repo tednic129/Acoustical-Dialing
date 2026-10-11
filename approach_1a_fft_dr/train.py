@@ -63,9 +63,9 @@ def build_models(method="pca", components=30, n_bands=N_BANDS):
 TUNING_FILE = config.RESULTS_DIR / "1a_tuning.json"
 
 
-def load_chosen():
+def load_chosen(tuning_file=TUNING_FILE):
     """The settings tune.py chose for each classifier, on the training speakers only."""
-    with open(TUNING_FILE, encoding="utf-8") as f:
+    with open(tuning_file, encoding="utf-8") as f:
         return json.load(f)["chosen"]
 
 
@@ -96,9 +96,11 @@ def main():
     parser.add_argument("--tuned", action="store_true", help="use the settings from results/1a_tuning.json")
     parser.add_argument("--validate-only", action="store_true", help="print validation accuracy, don't test")
     args = parser.parse_args()
-    tag = "1a_tuned" if args.tuned else "1a"
-    if args.tuned and not args.validate_only and list(config.RESULTS_DIR.glob("1a_tuned_*.json")):
-        raise SystemExit("results/1a_tuned_*.json already exist: the tuned test run happens only once.")
+    suffix = "" if args.languages == ["de"] else "_" + "_".join(args.languages)
+    tuning_file = config.RESULTS_DIR / f"1a{suffix}_tuning.json"
+    tag = f"1a{suffix}" + ("_tuned" if args.tuned else "")
+    if args.tuned and not args.validate_only and list(config.RESULTS_DIR.glob(f"{tag}_*.json")):
+        raise SystemExit(f"results/{tag}_*.json already exist: the tuned test run happens only once.")
 
     data = load_processed(languages=args.languages)
     train, test = split_masks(data["speakers"])
@@ -106,9 +108,9 @@ def main():
     print(f"Train: {train.sum()} words {sorted(set(speakers[train].tolist()))} | Test: {test.sum()} words "
           f"{sorted(set(speakers[test].tolist()))} | languages {args.languages}")
     if args.tuned:
-        chosen = load_chosen()
+        chosen = load_chosen(tuning_file)
         models = build_tuned_models(chosen, args.bands)
-        print(f"Features: {args.bands} FFT bands, settings per classifier from {TUNING_FILE.name}, tag {tag}\n")
+        print(f"Features: {args.bands} FFT bands, settings per classifier from {tuning_file.name}, tag {tag}\n")
     else:
         models = build_models(args.dr, args.components, args.bands)
         kept = min(args.components, 9) if args.dr == "lda" else args.components

@@ -75,8 +75,10 @@ def main():
         print(f"{f'{k} x {k}':>9} {x.shape[1]:7d} {f'{ratio:.0f}x':>8} {acc:9.3f}")
 
     tuning = args.gamma_factor is not None
-    json_name = "1c_tuning.json" if tuning else "1c_sweep.json"
-    plot_name = "1c_tuning_accuracy_vs_compression.png" if tuning else "1c_accuracy_vs_compression.png"
+    lang = "1c" if list(args.languages) == ["de"] else "1c_" + "_".join(args.languages)
+    json_name = f"{lang}_tuning.json" if tuning else f"{lang}_sweep.json"
+    plot_name = (f"{lang}_tuning_accuracy_vs_compression.png" if tuning
+                 else f"{lang}_accuracy_vs_compression.png")
     config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with open(config.RESULTS_DIR / json_name, "w", encoding="utf-8") as f:
         json.dump({"languages": args.languages, "speakers": sorted(set(speakers.tolist())),
