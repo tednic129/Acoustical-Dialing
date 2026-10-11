@@ -1,0 +1,209 @@
+{
+  "languages": [
+    "en"
+  ],
+  "train_speakers": [
+    "akshay",
+    "maulik"
+  ],
+  "gamma": "factor / 12850 features",
+  "classifiers": {
+    "Linear SVM": {
+      "rows": [
+        {
+          "params": {
+            "svc__C": 0.0001
+          },
+          "validation": 0.7068,
+          "std": 0.0568
+        },
+        {
+          "params": {
+            "svc__C": 0.001
+          },
+          "validation": 0.7014,
+          "std": 0.0714
+        },
+        {
+          "params": {
+            "svc__C": 0.01
+          },
+          "validation": 0.7014,
+          "std": 0.0714
+        },
+        {
+          "params": {
+            "svc__C": 0.1
+          },
+          "validation": 0.7014,
+          "std": 0.0714
+        },
+        {
+          "params": {
+            "svc__C": 1
+          },
+          "validation": 0.7014,
+          "std": 0.0714
+        }
+      ],
+      "best_params": {
+        "svc__C": 0.0001
+      },
+      "best_validation": 0.7068
+    },
+    "RBF SVM": {
+      "rows": [
+        {
+          "params": {
+            "svc__C": 1,
+            "svc__gamma": 7.782101167315176e-06
+          },
+          "validation": 0.6291,
+          "std": 0.0891
+        },
+        {
+          "params": {
+            "svc__C": 1,
+            "svc__gamma": 7.782101167315176e-05
+          },
+          "validation": 0.6009,
+          "std": 0.0809
+        },
+        {
+          "params": {
+            "svc__C": 1,
+            "svc__gamma": 0.0007782101167315176
+          },
+          "validation": 0.1,
+          "std": 0.0
+        },
+        {
+          "params": {
+            "svc__C": 10,
+            "svc__gamma": 7.782101167315176e-06
+          },
+          "validation": 0.7114,
+          "std": 0.0614
+        },
+        {
+          "params": {
+            "svc__C": 10,
+            "svc__gamma": 7.782101167315176e-05
+          },
+          "validation": 0.6232,
+          "std": 0.1132
+        },
+        {
+          "params": {
+            "svc__C": 10,
+            "svc__gamma": 0.0007782101167315176
+          },
+          "validation": 0.1,
+          "std": 0.0
+        },
+        {
+          "params": {
+            "svc__C": 100,
+            "svc__gamma": 7.782101167315176e-06
+          },
+          "validation": 0.7205,
+          "std": 0.0705
+        },
+        {
+          "params": {
+            "svc__C": 100,
+            "svc__gamma": 7.782101167315176e-05
+          },
+          "validation": 0.6232,
+          "std": 0.1132
+        },
+        {
+          "params": {
+            "svc__C": 100,
+            "svc__gamma": 0.0007782101167315176
+          },
+          "validation": 0.1,
+          "std": 0.0
+        }
+      ],
+      "best_params": {
+        "svc__C": 100,
+        "svc__gamma": 7.782101167315176e-06
+      },
+      "best_validation": 0.7205
+    },
+    "kNN": {
+      "rows": [
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 1,
+            "kneighborsclassifier__weights": "uniform"
+          },
+          "validation": 0.6041,
+          "std": 0.0141
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 1,
+            "kneighborsclassifier__weights": "distance"
+          },
+          "validation": 0.6041,
+          "std": 0.0141
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 3,
+            "kneighborsclassifier__weights": "uniform"
+          },
+          "validation": 0.575,
+          "std": 0.025
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 3,
+            "kneighborsclassifier__weights": "distance"
+          },
+          "validation": 0.6086,
+          "std": 0.0186
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 5,
+            "kneighborsclassifier__weights": "uniform"
+          },
+          "validation": 0.5873,
+          "std": 0.0673
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 5,
+            "kneighborsclassifier__weights": "distance"
+          },
+          "validation": 0.6064,
+          "std": 0.0664
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 7,
+            "kneighborsclassifier__weights": "uniform"
+          },
+          "validation": 0.5773,
+          "std": 0.0773
+        },
+        {
+          "params": {
+            "kneighborsclassifier__n_neighbors": 7,
+            "kneighborsclassifier__weights": "distance"
+          },
+          "validation": 0.5823,
+          "std": 0.0723
+        }
+      ],
+      "best_params": {
+        "kneighborsclassifier__n_neighbors": 3,
+        "kneighborsclassifier__weights": "distance"
+      },
+      "best_validation": 0.6086
+    }
+  }
+}

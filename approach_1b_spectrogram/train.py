@@ -1,11 +1,14 @@
 """Train and test the three 1.b classifiers once, and save the best one for the live demo.
 
-    python -m approach_1b_spectrogram.train            # default settings  -> results/1b_*
-    python -m approach_1b_spectrogram.train --tuned    # tuned settings    -> results/1b_tuned_*
+    python -m approach_1b_spectrogram.train                            # German, defaults -> results/1b_*
+    python -m approach_1b_spectrogram.train --tuned                    # German, tuned    -> results/1b_tuned_*
+    python -m approach_1b_spectrogram.train --languages en             # English, defaults -> results/1b_en_*
+    python -m approach_1b_spectrogram.train --languages en --tuned     # English, tuned    -> results/1b_en_tuned_*
 
 Every classifier is one pipeline: spectrogram features -> scaling -> classifier. --tuned applies
-the settings tune.py chose on validation (results/1b_tuning.json). Validation accuracy comes from
-speaker-wise cross-validation on the training speakers; the test speakers are used once, here.
+the settings tune.py chose on validation for the same languages (results/<prefix>_tuning.json).
+Validation accuracy comes from speaker-wise cross-validation on the training speakers; the test
+speakers are used once, here.
 """
 import argparse
 import json
@@ -19,15 +22,16 @@ from sklearn.preprocessing import FunctionTransformer, StandardScaler
 from sklearn.svm import SVC
 
 from approach_1b_spectrogram.features import N_VALUES, SHAPE, features_batch
+from approach_1b_spectrogram.tune import prefix, tie_rule
 from common import config
 from common.evaluation import save_results, speaker_cv
 from common.preprocessing import load_processed, split_masks
 
 
-def build_models(tuned=False):
+def build_models(tuned=False, languages=("de",)):
     """Words in, digits out: three pipelines that differ only in the classifier.
 
-    tuned=True applies the settings tune.py chose on validation (results/1b_tuning.json).
+    tuned=True applies the settings tune.py chose on validation for these languages.
     """
     def pipeline(classifier):
         return make_pipeline(FunctionTransformer(features_batch), StandardScaler(), classifier)
@@ -38,18 +42,21 @@ def build_models(tuned=False):
         "RBF SVM": pipeline(SVC(kernel="rbf", C=10.0, gamma="scale")),
     }
     if tuned:
-        chosen = json.loads((config.RESULTS_DIR / "1b_tuning.json").read_text())["classifiers"]
+        tuning_file = config.RESULTS_DIR / f"{prefix(languages)}_tuning.json"
+        if not tuning_file.exists():
+            raise SystemExit(f"{tuning_file.name} not found: run tune.py with the same --languages first.")
+        chosen = json.loads(tuning_file.read_text())["classifiers"]
         for name, model in models.items():
-            model.set_params(**chosen[name]["best_params"])
+            model.set_params(**tie_rule(chosen[name]["rows"]))
     return models
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--languages", nargs="+", default=list(config.LANGUAGES))
-    parser.add_argument("--tuned", action="store_true", help="use the settings from results/1b_tuning.json")
+    parser.add_argument("--tuned", action="store_true", help="use the settings from results/<prefix>_tuning.json")
     args = parser.parse_args()
-    tag = "1b_tuned" if args.tuned else "1b"
+    tag = prefix(args.languages) + ("_tuned" if args.tuned else "")
 
     data = load_processed(languages=args.languages)
     train, test = split_masks(data["speakers"])
@@ -64,7 +71,7 @@ def main():
     cv, groups = speaker_cv(speakers[train])
     best_name, best_validation, best_model = None, -1.0, None
     print(f"{'classifier':<12} {'validation':>10} {'test':>7} {'ms/word':>8}")
-    for name, model in build_models(args.tuned).items():
+    for name, model in build_models(args.tuned, args.languages).items():
         validation = cross_val_score(model, events[train], labels[train], groups=groups, cv=cv).mean()
         model.fit(events[train], labels[train])
         start = time.perf_counter()
