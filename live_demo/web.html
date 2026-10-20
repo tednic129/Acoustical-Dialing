@@ -131,7 +131,7 @@ const TEXT = {
     logSaved: "Protokoll: {p}", logFailed: "Protokoll nicht gespeichert: {m}",
     finished: "Fertig.", stopped: "Gestoppt.", error: "Fehler: {m}", badNumber: "Nur Ziffern eingeben (1 bis 15).",
     busy: "Ein Durchgang läuft. Zuerst auf Stopp klicken.", unknown: "Unbekannte Sprache oder unbekannte Stimme.",
-    noModel: "Kein Modell: zuerst trainieren.", noData: "Zuerst `py -3.12 -m common.prepare_data` ausführen.",
+    noMicrophone: "Dieser Server hat kein Mikrofon. Die Aufnahmen (Simulation) sind aktiv.", noModel: "Kein Modell: zuerst trainieren.", noData: "Zuerst `py -3.12 -m common.prepare_data` ausführen.",
     mismatch: "Achtung: {m}", missing: "Kein Modell für: {m}.",
     hApproach: "Verfahren", hSettings: "Einstellungen", hClassifier: "Klassifikator", hValues: "Werte pro Wort",
     hSmaller: "Kleiner als das volle Spektrogramm", hVal: "Validierung", hTest: "Test (±95 %)",
@@ -161,7 +161,7 @@ const TEXT = {
     logSaved: "Log: {p}", logFailed: "Log not saved: {m}",
     finished: "Finished.", stopped: "Stopped.", error: "Error: {m}", badNumber: "Type digits only (1 to 15).",
     busy: "A run is in progress. Click Stop first.", unknown: "Unknown language or voice.",
-    noModel: "No model: train it first.", noData: "First run `py -3.12 -m common.prepare_data`.",
+    noMicrophone: "This server has no microphone. The recordings (simulation) are active.", noModel: "No model: train it first.", noData: "First run `py -3.12 -m common.prepare_data`.",
     mismatch: "Caution: {m}", missing: "No model for: {m}.",
     hApproach: "Approach", hSettings: "Settings", hClassifier: "Classifier", hValues: "Values per word",
     hSmaller: "Smaller than the full spectrogram", hVal: "Validation", hTest: "Test (±95 %)",
@@ -296,7 +296,9 @@ async function choose(language) {
   state.target = validTarget($("target").value.trim()) ? $("target").value.trim() : "";
   state.heard = {}; state.done = false;
   renderTable(); renderModels();
-  setStatus(state.models.length ? t("idle") : t("noModel"));
+  const noMic = state.info.microphone === false;
+  if (noMic) document.querySelector("input[name=src][value=sim]").checked = true;
+  setStatus((state.models.length ? t("idle") : t("noModel")) + (noMic ? " " + t("noMicrophone") : ""));
   setRunning(Boolean(state.info.running));
   $("choose").hidden = true; $("demo").hidden = false;
   $("target").focus();
@@ -306,7 +308,8 @@ function setRunning(on) {
   state.running = on;
   $("start").disabled = on; $("stop").disabled = !on;
   for (const id of ["back", "target", "voice"]) $(id).disabled = on;
-  document.querySelectorAll("input[name=src]").forEach((r) => { r.disabled = on; });
+  const noMic = Boolean(state.info) && state.info.microphone === false;
+  document.querySelectorAll("input[name=src]").forEach((r) => { r.disabled = on || (noMic && r.value === "mic"); });
 }
 
 async function start() {
