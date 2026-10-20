@@ -81,7 +81,7 @@
           <input id="target" type="text" inputmode="numeric" maxlength="15" placeholder="0631123456" autocomplete="off"></div>
         <div class="field"><label class="t" for="voice" data-t="voice"></label><select id="voice"></select></div>
         <div class="field"><span data-t="source"></span>
-          <span class="choice"><label><input type="radio" name="src" value="mic" checked> <span data-t="mic"></span></label><label><input type="radio" name="src" value="sim"> <span data-t="sim"></span></label></span></div>
+          <span class="choice"><label><input type="radio" name="src" value="mic" checked> <span data-t="mic"></span></label><label><input type="radio" name="src" value="browser"> <span data-t="browserMic"></span></label><label><input type="radio" name="src" value="sim"> <span data-t="sim"></span></label></span></div>
         <div class="buttons">
           <button id="start" class="main" data-t="start"></button>
           <button id="stop" data-t="stop" disabled></button>
@@ -116,7 +116,7 @@ const TEXT = {
   de: {
     title: "Akustisches Wählen: der Pizza-Test", sub: "Sensor Signal Processing · RPTU Kaiserslautern-Landau",
     input: "Eingabe", output: "Ausgabe", modelsTitle: "Modelle",
-    number: "Zu wählende Nummer", voice: "Stimme", source: "Quelle", mic: "Mikrofon", sim: "Aufnahmen (Simulation)",
+    number: "Zu wählende Nummer", voice: "Stimme", source: "Quelle", mic: "Mikrofon (Server)", browserMic: "Mikrofon (dieser Browser)", sim: "Aufnahmen (Simulation)",
     voiceNew: "Neue Stimme (nicht im Training)", voiceTraining: "Trainingsstimme",
     start: "Start", stop: "Stopp", back: "Sprache ändern", level: "Pegel",
     expected: "Erwartet", length: "Wortlänge (s)", default: "Standard", tuned: "Abgestimmt",
@@ -131,7 +131,11 @@ const TEXT = {
     logSaved: "Protokoll: {p}", logFailed: "Protokoll nicht gespeichert: {m}",
     finished: "Fertig.", stopped: "Gestoppt.", error: "Fehler: {m}", badNumber: "Nur Ziffern eingeben (1 bis 15).",
     busy: "Ein Durchgang läuft. Zuerst auf Stopp klicken.", unknown: "Unbekannte Sprache oder unbekannte Stimme.",
-    noMicrophone: "Dieser Server hat kein Mikrofon. Die Aufnahmen (Simulation) sind aktiv.", noModel: "Kein Modell: zuerst trainieren.", noData: "Zuerst `py -3.12 -m common.prepare_data` ausführen.",
+    noMicrophone: "Dieser Server hat kein Mikrofon. Die Aufnahmen (Simulation) sind aktiv.",
+    noMicrophoneBrowser: "Dieser Server hat kein Mikrofon. Das Mikrofon dieses Browsers oder die Aufnahmen (Simulation) nutzen.",
+    micDenied: "Der Browser darf das Mikrofon nicht nutzen. Zugriff erlauben. Dann erneut auf Start klicken.",
+    micFailed: "Mikrofon nicht verfügbar: {m}", badRate: "Unbekannte Abtastrate des Mikrofons.",
+    noModel: "Kein Modell: zuerst trainieren.", noData: "Zuerst `py -3.12 -m common.prepare_data` ausführen.",
     mismatch: "Achtung: {m}", missing: "Kein Modell für: {m}.",
     hApproach: "Verfahren", hSettings: "Einstellungen", hClassifier: "Klassifikator", hValues: "Werte pro Wort",
     hSmaller: "Kleiner als das volle Spektrogramm", hVal: "Validierung", hTest: "Test (±95 %)",
@@ -146,7 +150,7 @@ const TEXT = {
   en: {
     title: "Acoustic dialling: the pizza test", sub: "Sensor Signal Processing · RPTU Kaiserslautern-Landau",
     input: "Input", output: "Output", modelsTitle: "Models",
-    number: "Number to dial", voice: "Voice", source: "Source", mic: "Microphone", sim: "Recordings (simulation)",
+    number: "Number to dial", voice: "Voice", source: "Source", mic: "Microphone (server)", browserMic: "Microphone (this browser)", sim: "Recordings (simulation)",
     voiceNew: "New voice (not in the training)", voiceTraining: "Training voice",
     start: "Start", stop: "Stop", back: "Change the language", level: "Level",
     expected: "Expected", length: "Word length (s)", default: "Default", tuned: "Tuned",
@@ -161,7 +165,11 @@ const TEXT = {
     logSaved: "Log: {p}", logFailed: "Log not saved: {m}",
     finished: "Finished.", stopped: "Stopped.", error: "Error: {m}", badNumber: "Type digits only (1 to 15).",
     busy: "A run is in progress. Click Stop first.", unknown: "Unknown language or voice.",
-    noMicrophone: "This server has no microphone. The recordings (simulation) are active.", noModel: "No model: train it first.", noData: "First run `py -3.12 -m common.prepare_data`.",
+    noMicrophone: "This server has no microphone. The recordings (simulation) are active.",
+    noMicrophoneBrowser: "This server has no microphone. Use the microphone of this browser or the recordings (simulation).",
+    micDenied: "The browser may not use the microphone. Allow the access. Then click Start again.",
+    micFailed: "Microphone not available: {m}", badRate: "Unknown sample rate of the microphone.",
+    noModel: "No model: train it first.", noData: "First run `py -3.12 -m common.prepare_data`.",
     mismatch: "Caution: {m}", missing: "No model for: {m}.",
     hApproach: "Approach", hSettings: "Settings", hClassifier: "Classifier", hValues: "Values per word",
     hSmaller: "Smaller than the full spectrogram", hVal: "Validation", hTest: "Test (±95 %)",
@@ -175,7 +183,7 @@ const TEXT = {
   },
 };
 const $ = (id) => document.getElementById(id);
-const state = { lang: "de", info: null, models: [], target: "", heard: {}, done: false, complete: false, running: false, tally: {} };
+const state = { lang: "de", info: null, models: [], target: "", heard: {}, done: false, complete: false, running: false, starting: false, tally: {} };
 const t = (key, args = {}) => TEXT[state.lang][key].replace(/\{(\w+)\}/g, (_, k) => args[k] ?? "");
 const locale = () => (state.lang === "de" ? "de-DE" : "en-GB");
 const num = (x, d = 1) => x.toLocaleString(locale(), { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -296,9 +304,12 @@ async function choose(language) {
   state.target = validTarget($("target").value.trim()) ? $("target").value.trim() : "";
   state.heard = {}; state.done = false;
   renderTable(); renderModels();
-  const noMic = state.info.microphone === false;
-  if (noMic) document.querySelector("input[name=src][value=sim]").checked = true;
-  setStatus((state.models.length ? t("idle") : t("noModel")) + (noMic ? " " + t("noMicrophone") : ""));
+  const noMic = state.info.microphone === false, canBrowser = browserMicOk();
+  const radio = (value) => document.querySelector(`input[name=src][value=${value}]`);
+  radio("mic").closest("label").hidden = noMic;                // no sound card on the server: hide its microphone
+  radio("browser").closest("label").hidden = !canBrowser;      // the browser needs HTTPS (or localhost) for the microphone
+  if (noMic || !canBrowser && radio("browser").checked) radio(noMic && canBrowser ? "browser" : noMic ? "sim" : "mic").checked = true;
+  setStatus((state.models.length ? t("idle") : t("noModel")) + (noMic ? " " + t(canBrowser ? "noMicrophoneBrowser" : "noMicrophone") : ""));
   setRunning(Boolean(state.info.running));
   $("choose").hidden = true; $("demo").hidden = false;
   $("target").focus();
@@ -312,21 +323,129 @@ function setRunning(on) {
   document.querySelectorAll("input[name=src]").forEach((r) => { r.disabled = on || (noMic && r.value === "mic"); });
 }
 
+/* ---------- microphone of the browser: capture, send chunks to /audio ---------- */
+const WORKLET = `
+class Capture extends AudioWorkletProcessor {
+  constructor() { super(); this.buffer = new Float32Array(4096); this.count = 0; }
+  process(inputs) {
+    const channel = inputs[0] && inputs[0][0];
+    if (channel) {
+      for (let i = 0; i < channel.length; i++) {
+        this.buffer[this.count++] = channel[i];
+        if (this.count === this.buffer.length) { this.port.postMessage(this.buffer.slice(0)); this.count = 0; }
+      }
+    }
+    return true;
+  }
+}
+registerProcessor("capture", Capture);`;
+let capture = null;
+
+const browserMicOk = () => Boolean(window.isSecureContext && navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
+  window.AudioContext && window.AudioWorkletNode);
+
+async function openBrowserMic() {
+  const context = new AudioContext();                          // made here, inside the click, so that the browser lets it run
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    try {
+      await context.resume();
+      const url = URL.createObjectURL(new Blob([WORKLET], { type: "text/javascript" }));
+      await context.audioWorklet.addModule(url);
+      URL.revokeObjectURL(url);
+      const node = new AudioWorkletNode(context, "capture", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] });
+      const silent = context.createGain();
+      silent.gain.value = 0;                                   // the worklet writes no output; this only keeps the graph running
+      context.createMediaStreamSource(stream).connect(node);
+      node.connect(silent);
+      silent.connect(context.destination);
+      const track = stream.getAudioTracks()[0];
+      capture = { stream, context, node, rate: context.sampleRate, label: (track && track.label) || "",
+                  queue: [], seq: 0, run: 0, live: false, sending: false, failures: 0 };
+      node.port.onmessage = (m) => { if (capture && capture.live) { capture.queue.push(m.data); pump(); } };
+      return capture;
+    } catch (error) {
+      stream.getTracks().forEach((track) => track.stop());
+      throw error;
+    }
+  } catch (error) {
+    context.close().catch(() => {});
+    throw error;
+  }
+}
+
+function closeBrowserMic() {
+  const c = capture;
+  capture = null;
+  if (!c) return;
+  c.live = false;
+  c.queue.length = 0;
+  c.node.port.onmessage = null;
+  c.stream.getTracks().forEach((track) => track.stop());
+  c.context.close().catch(() => {});
+}
+
+async function pump() {                                        // one chunk at a time, in order
+  const c = capture;
+  if (!c || c.sending) return;
+  c.sending = true;
+  try {
+    while (capture === c && c.queue.length) {
+      if (c.queue.length > 100) { closeBrowserMic(); setStatus(t("micFailed", { m: "connection too slow" })); break; }
+      let answer;
+      try {
+        const reply = await fetch(`/audio?run=${c.run}&seq=${c.seq}`, {
+          method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: c.queue[0] });
+        answer = await reply.json();
+      } catch (error) {
+        if (++c.failures > 20) { closeBrowserMic(); setStatus(t("micFailed", { m: "connection lost" })); break; }
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        continue;
+      }
+      c.failures = 0;
+      if (!answer.ok) { closeBrowserMic(); break; }            // the run has ended: the "done" event follows
+      c.queue.shift();
+      c.seq += 1;
+    }
+  } finally {
+    c.sending = false;
+  }
+}
+
 async function start() {
+  if (state.starting || state.running) return;
   const target = $("target").value.trim();
   if (!validTarget(target)) { setStatus(t("badNumber")); return; }
+  const source = document.querySelector("input[name=src]:checked").value;
+  let mic = null;
+  if (source === "browser") {
+    state.starting = true;
+    try {
+      mic = await openBrowserMic();
+    } catch (error) {
+      setStatus(error && error.name === "NotAllowedError" ? t("micDenied") : t("micFailed", { m: (error && error.message) || String(error) }));
+      return;
+    } finally {
+      state.starting = false;
+    }
+  }
   state.target = target; state.heard = {}; state.done = false; state.complete = false;
   for (const m of state.models) state.heard[m.id] = "";
   renderTable(); setRunning(true);
   let answer;
   try {
     answer = await (await fetch("/start", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ language: state.lang, target, voice: $("voice").value,
-        simulate: document.querySelector("input[name=src]:checked").value === "sim" }) })).json();
+      body: JSON.stringify({ language: state.lang, target, voice: $("voice").value, simulate: source === "sim",
+        browser_rate: mic ? mic.rate : null, browser_label: mic ? mic.label : "" }) })).json();
   } catch (error) {
-    offline(true); setRunning(false); return;
+    closeBrowserMic(); offline(true); setRunning(false); return;
   }
-  if (!answer.ok) { setRunning(answer.error === "busy"); setStatus(TEXT[state.lang][answer.error] ?? t("error", { m: answer.error })); }
+  if (!answer.ok) {
+    closeBrowserMic(); setRunning(answer.error === "busy"); setStatus(TEXT[state.lang][answer.error] ?? t("error", { m: answer.error }));
+    return;
+  }
+  if (mic) { mic.run = answer.run; mic.live = true; }          // sound from now on belongs to this run
 }
 
 function onEvent(e) {
@@ -348,7 +467,7 @@ function onEvent(e) {
     }
     renderFoot();
   } else if (e.type === "done") {
-    setRunning(false); $("bar").style.width = "0";
+    closeBrowserMic(); setRunning(false); $("bar").style.width = "0";
     state.heard = e.heard; state.done = true; state.complete = e.complete;
     if (e.counted) {                                  // every run with at least one word counts; a missed word is a failed run
       const tally = (state.tally[state.lang] ??= {});
@@ -358,7 +477,7 @@ function onEvent(e) {
     }
     renderFoot(); setStatus(e.complete ? t("finished") : t("stopped"));
   } else if (e.type === "error") {
-    setRunning(false); setStatus(t("error", { m: e.message }));
+    closeBrowserMic(); setRunning(false); setStatus(t("error", { m: e.message }));
   } else if (e.type === "log") {
     setStatus(`${$("status").textContent} ${e.error ? t("logFailed", { m: e.error }) : t("logSaved", { p: e.path })}`);
   }
@@ -366,7 +485,7 @@ function onEvent(e) {
 
 document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => choose(b.dataset.lang)));
 $("start").addEventListener("click", start);
-$("stop").addEventListener("click", () => fetch("/stop", { method: "POST" }).catch(() => offline(true)));
+$("stop").addEventListener("click", () => { closeBrowserMic(); fetch("/stop", { method: "POST" }).catch(() => offline(true)); });
 $("back").addEventListener("click", () => { $("demo").hidden = true; $("choose").hidden = false; });
 $("target").addEventListener("input", () => {
   const value = $("target").value.trim();
