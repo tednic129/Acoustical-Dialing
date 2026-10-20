@@ -142,6 +142,7 @@ class Demo:
         self.thread = None
         self.active = False           # True from Start until the loop ends (the log is written after that)
         self.runs = 0
+        self.microphone = True        # False on a server without a microphone (--no-microphone)
 
     def send(self, **event):
         with self.lock:
@@ -158,13 +159,15 @@ class Demo:
                 _, info = load_model(model_tag(approach, language, settings == "tuned"))
                 models.append({"id": f"{approach}_{settings}", "approach": approach, "settings": settings, **info})
         return {"language": language, "target": self.target, "models": models, "voices": voices(language),
-                "running": self.running(), "threshold_db": round(20 * np.log10(LOUDNESS), 1)}
+                "running": self.running(), "microphone": self.microphone, "threshold_db": round(20 * np.log10(LOUDNESS), 1)}
 
     def start(self, language, target, simulate, voice):
         if language not in LANGUAGES or voice not in VOICES:
             return "unknown"
         if not target.isdigit() or len(target) > MAX_DIGITS:
             return "badNumber"
+        if not simulate and not self.microphone:
+            return "noMicrophone"
         if self.running():
             return "busy"
         models, infos = {}, {}
@@ -347,6 +350,10 @@ def warm_logs():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="address to listen on (default 127.0.0.1: this computer only; 0.0.0.0 on a server)")
+    parser.add_argument("--no-microphone", action="store_true",
+                        help="this computer has no microphone: the page offers the recordings only")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--target", default="", help="number shown in the input field at the start")
     parser.add_argument("--no-browser", action="store_true", help="do not open the browser")
@@ -356,7 +363,8 @@ def main():
     set_log_dir(args.log_dir)
 
     DEMO.target = args.target if args.target.isdigit() else ""
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    DEMO.microphone = not args.no_microphone
+    server = ThreadingHTTPServer((args.host, args.port), Handler)
     url = f"http://localhost:{args.port}"
     print(f"Demo page: {url}   (Ctrl+C stops the server)")
     print(f"  logs: {log_dir()}")
