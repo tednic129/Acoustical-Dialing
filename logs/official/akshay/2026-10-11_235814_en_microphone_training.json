@@ -1,0 +1,1190 @@
+{
+ "log_version": 1,
+ "run": {
+  "id": "2026-10-11_235814_en_microphone_training",
+  "started": "2026-10-11T23:58:14+02:00",
+  "ended": "2026-10-11T23:58:17+02:00",
+  "duration_s": 1.6,
+  "status": "stopped",
+  "message": null,
+  "language": "en",
+  "source": "microphone",
+  "voice": "training",
+  "speaker": null,
+  "input_device": "Microphone Array (Intel® Smart  (44100 Hz)",
+  "target": "0631123456",
+  "words_expected": 10,
+  "words_detected": 0
+ },
+ "environment": {
+  "commit": "3fdd983",
+  "branch": "main",
+  "python": "3.12.10",
+  "scikit_learn": "1.6.1",
+  "numpy": "2.5.4",
+  "platform": "Windows-11-10.0.26300-SP0"
+ },
+ "settings": {
+  "settings_id": "e91785ab",
+  "models_id": "73a1c2a1",
+  "block_s": 0.1,
+  "quiet_blocks": 3,
+  "loudness_factor": 4.0,
+  "sample_rate": 16000,
+  "frame_ms": 25,
+  "hop_ms": 10,
+  "pad_ms": 50,
+  "noise_percentile": 10,
+  "energy_factor": 4.0,
+  "peak_fraction": 0.05,
+  "max_gap_ms": 250,
+  "max_word_ms": 1200,
+  "zcr_threshold": 0.3,
+  "zcr_energy_factor": 2.0,
+  "hiss_extend_ms": 200,
+  "threshold_db": 12.0,
+  "calibration_noise_rms": 0.026925,
+  "threshold_rms": 0.107699,
+  "room_during_run_db": -65.2
+ },
+ "models": {
+  "1a_default": {
+   "label": "1.a default",
+   "tag": "1a_en",
+   "classifier": "RBF SVM",
+   "k": null,
+   "values_per_word": 30,
+   "compression_ratio": null,
+   "validation_accuracy": 0.55,
+   "test_accuracy": 0.5583,
+   "n_test_words": 120,
+   "model_file": "models/1a_en_best.joblib",
+   "result_file": "results/1a_en_rbf_svm.json",
+   "model_sha256_12": "656f26bc308d",
+   "per_digit_test_accuracy": [
+    0.2,
+    0.6,
+    0.5,
+    0.7,
+    1.0,
+    0.9,
+    1.0,
+    0.5,
+    0.0,
+    0.9
+   ],
+   "test_confusion_matrix": [
+    [
+     6,
+     0,
+     1,
+     8,
+     0,
+     0,
+     14,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     6,
+     2,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     4,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     7,
+     1,
+     0,
+     0,
+     0,
+     0,
+     2
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     9,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     5,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9
+    ]
+   ]
+  },
+  "1a_tuned": {
+   "label": "1.a tuned",
+   "tag": "1a_en_tuned",
+   "classifier": "Linear SVM",
+   "k": null,
+   "values_per_word": 10,
+   "compression_ratio": null,
+   "validation_accuracy": 0.6077,
+   "test_accuracy": 0.6417,
+   "n_test_words": 120,
+   "model_file": "models/1a_en_tuned_best.joblib",
+   "result_file": "results/1a_en_tuned_linear_svm.json",
+   "model_sha256_12": "9a210895ff90",
+   "per_digit_test_accuracy": [
+    0.633,
+    0.9,
+    0.5,
+    0.4,
+    0.5,
+    0.8,
+    0.7,
+    1.0,
+    0.1,
+    0.9
+   ],
+   "test_confusion_matrix": [
+    [
+     19,
+     1,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     9,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     4,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     4,
+     2,
+     0,
+     0,
+     0,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     5,
+     0,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     1,
+     8,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     3,
+     0,
+     0,
+     0,
+     0,
+     0,
+     7,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     8,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9
+    ]
+   ]
+  },
+  "1b_default": {
+   "label": "1.b default",
+   "tag": "1b_en",
+   "classifier": "Linear SVM",
+   "k": null,
+   "values_per_word": 12850,
+   "compression_ratio": null,
+   "validation_accuracy": 0.7014,
+   "test_accuracy": 0.8333,
+   "n_test_words": 120,
+   "model_file": "models/1b_en_best.joblib",
+   "result_file": "results/1b_en_linear_svm.json",
+   "model_sha256_12": "d83042eaa9a7",
+   "per_digit_test_accuracy": [
+    0.833,
+    1.0,
+    1.0,
+    0.7,
+    0.9,
+    0.4,
+    1.0,
+    0.9,
+    0.9,
+    0.7
+   ],
+   "test_confusion_matrix": [
+    [
+     25,
+     0,
+     1,
+     3,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     2,
+     7,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     0,
+     0,
+     3,
+     4,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     9,
+     0
+    ],
+    [
+     0,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     7
+    ]
+   ]
+  },
+  "1b_tuned": {
+   "label": "1.b tuned",
+   "tag": "1b_en_tuned",
+   "classifier": "RBF SVM",
+   "k": null,
+   "values_per_word": 12850,
+   "compression_ratio": null,
+   "validation_accuracy": 0.7114,
+   "test_accuracy": 0.825,
+   "n_test_words": 120,
+   "model_file": "models/1b_en_tuned_best.joblib",
+   "result_file": "results/1b_en_tuned_rbf_svm.json",
+   "model_sha256_12": "813e19b2230d",
+   "per_digit_test_accuracy": [
+    0.833,
+    1.0,
+    1.0,
+    0.6,
+    0.9,
+    0.4,
+    1.0,
+    0.9,
+    1.0,
+    0.6
+   ],
+   "test_confusion_matrix": [
+    [
+     25,
+     0,
+     1,
+     3,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     2,
+     6,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     1,
+     4,
+     0,
+     4,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0
+    ],
+    [
+     0,
+     3,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     6
+    ]
+   ]
+  },
+  "1c_default": {
+   "label": "1.c default",
+   "tag": "1c_en",
+   "classifier": "RBF SVM",
+   "k": 16,
+   "values_per_word": 256,
+   "compression_ratio": 50.2,
+   "validation_accuracy": 0.6859,
+   "test_accuracy": 0.7333,
+   "n_test_words": 120,
+   "model_file": "models/1c_en_best.joblib",
+   "result_file": "results/1c_en_rbf_svm.json",
+   "model_sha256_12": "8b03e066ef31",
+   "per_digit_test_accuracy": [
+    0.767,
+    0.9,
+    0.9,
+    0.8,
+    0.8,
+    0.3,
+    1.0,
+    0.8,
+    0.4,
+    0.6
+   ],
+   "test_confusion_matrix": [
+    [
+     23,
+     0,
+     1,
+     5,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     9,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     9,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     8,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     8,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     6,
+     1,
+     3,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     8,
+     0,
+     0
+    ],
+    [
+     2,
+     1,
+     0,
+     0,
+     1,
+     2,
+     0,
+     0,
+     4,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     6
+    ]
+   ]
+  },
+  "1c_tuned": {
+   "label": "1.c tuned",
+   "tag": "1c_en_tuned",
+   "classifier": "RBF SVM",
+   "k": 12,
+   "values_per_word": 144,
+   "compression_ratio": 89.2,
+   "validation_accuracy": 0.7418,
+   "test_accuracy": 0.75,
+   "n_test_words": 120,
+   "model_file": "models/1c_en_tuned_best.joblib",
+   "result_file": "results/1c_en_tuned_rbf_svm.json",
+   "model_sha256_12": "505b3a71e596",
+   "per_digit_test_accuracy": [
+    0.767,
+    1.0,
+    0.9,
+    0.5,
+    0.9,
+    0.6,
+    0.7,
+    0.7,
+    1.0,
+    0.4
+   ],
+   "test_confusion_matrix": [
+    [
+     23,
+     0,
+     1,
+     6,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     9,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     5,
+     0,
+     1,
+     0,
+     0,
+     2,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     9,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     4,
+     6,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     3,
+     0,
+     0,
+     7,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     7,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     10,
+     0
+    ],
+    [
+     0,
+     3,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     3,
+     4
+    ]
+   ]
+  }
+ },
+ "split": {
+  "training": [
+   "akshay",
+   "maulik"
+  ],
+  "n_training": 210,
+  "test": [
+   "tapan"
+  ],
+  "n_test": 120,
+  "word_length_s": {
+   "min": 0.25,
+   "median": 0.61,
+   "p95": 0.87,
+   "max": 1.28
+  }
+ },
+ "words": [],
+ "refused_sounds": [],
+ "alignment": [
+  {
+   "kind": "missed",
+   "target": 0,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 1,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 2,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 3,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 4,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 5,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 6,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 7,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 8,
+   "word": null
+  },
+  {
+   "kind": "missed",
+   "target": 9,
+   "word": null
+  }
+ ],
+ "missed": [],
+ "extra": [],
+ "per_model": {
+  "1a_default": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.0029
+  },
+  "1a_tuned": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.0118
+  },
+  "1b_default": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.1614
+  },
+  "1b_tuned": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.1461
+  },
+  "1c_default": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.045
+  },
+  "1c_tuned": {
+   "dialled": "",
+   "pizza_passed": false,
+   "digits_right": 0,
+   "digits_wrong": 0,
+   "digits_missed": 0,
+   "extra_words": 0,
+   "right_of_detected": [
+    0,
+    0
+   ],
+   "substitutions": [],
+   "chance_of_correct_number": 0.0563
+  }
+ },
+ "levels_db": [
+  -65.5,
+  -63.2,
+  -56.5,
+  -63.8,
+  -64.8,
+  -65.5,
+  -64.9,
+  -65.6,
+  -65.3,
+  -65.1,
+  -65.6,
+  -65.0,
+  -65.6,
+  -65.3,
+  -65.0,
+  -65.3
+ ],
+ "typical_gap_s": null,
+ "checks": [
+  {
+   "id": "C1",
+   "brief": "§2",
+   "expected": "The live loop runs from audio to dialled number.",
+   "status": "FAIL",
+   "what": "No word was detected. The loudest block was -56.5 dB; the threshold is 12.0 dB."
+  },
+  {
+   "id": "C2",
+   "brief": "§2, §3",
+   "expected": "Event detection finds every spoken digit (energy + zero-crossing rate).",
+   "status": "FAIL",
+   "what": "0 word(s) detected for 10 digit(s). Run status: stopped. "
+  },
+  {
+   "id": "C3",
+   "brief": "§2",
+   "expected": "All three approaches classify each word live (default and tuned).",
+   "status": "PASS",
+   "what": "6 models answered every word."
+  },
+  {
+   "id": "C4",
+   "brief": "§2",
+   "expected": "The digit is shown in real time.",
+   "status": "INFO",
+   "what": "No word was classified."
+  },
+  {
+   "id": "C5",
+   "brief": "§1",
+   "expected": "Pizza test: the dialled number equals the target (one wrong digit = wrong shop).",
+   "status": "FAIL",
+   "what": "Target 0631123456. Passed: none. Failed: 1.a default, 1.a tuned, 1.b default, 1.b tuned, 1.c default, 1.c tuned."
+  },
+  {
+   "id": "C6",
+   "brief": "§5.2",
+   "expected": "A new speaker is tested (no leakage of voices between training and test).",
+   "status": "INFO",
+   "what": "Declared as training voice. The system cannot check who speaks. Training voices: akshay, maulik; test voice: tapan."
+  },
+  {
+   "id": "C7",
+   "brief": "§1, §7",
+   "expected": "Per-digit errors compound: a number needs every digit right.",
+   "status": "INFO",
+   "what": "Chance of a correct 10-digit number from the test accuracy (one run cannot confirm it): 1.a default 0.3 %; 1.a tuned 1.2 %; 1.b default 16.1 %; 1.b tuned 14.6 %; 1.c default 4.5 %; 1.c tuned 5.6 %. Observed: 0 of 6 models correct."
+  },
+  {
+   "id": "C8",
+   "brief": "§5.6",
+   "expected": "1.c reports accuracy AND data-size reduction against 1.b (same classifier).",
+   "status": "INFO",
+   "what": "tuned: 89.2× fewer values (144 instead of 12850), validation +3.0 pp, test -7.5 pp (both RBF SVM); default: not comparable, the classifiers differ (Linear SVM against RBF SVM)"
+  },
+  {
+   "id": "C9",
+   "brief": "§6",
+   "expected": "The same code runs the simulation and the microphone.",
+   "status": "INFO",
+   "what": "Source: microphone. Both sources use the loop in live_demo/web.py (blocks of 0.1 s, threshold 4× the room noise, word ends after 3 quiet blocks)."
+  },
+  {
+   "id": "C10",
+   "brief": "Tuning Protocol",
+   "expected": "The loop settings and models stay the same during the pizza test.",
+   "status": "INFO",
+   "what": "Settings ID e91785ab (loop and event-extraction settings), models ID 73a1c2a1 (model files). Compare both with the other runs in summary.md. The room was 65.2 dB quieter during the run than at the calibration, so the threshold was 65.2 dB higher than planned."
+  }
+ ]
+}
