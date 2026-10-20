@@ -14,11 +14,15 @@ event extraction. Every spoken word goes to all models that exist for the select
 1.c). The page shows the answers side by side with the expected digit, builds the dialled
 number digit by digit, counts the pizza test per voice, and lists each model's values per
 word and validation -> test accuracy from its results/*.json file.
+Sources: the microphone of the computer that runs this server, recordings (simulation), or the microphone of
+the browser (the page sends the sound in small chunks to /audio; the server resamples it to 16 kHz and feeds
+the same loop). Use --no-microphone on a server that has no sound card.
 Every run that ends writes a log (what worked, what failed and why) to logs/demo/, or to the folder of --log-dir: see run_log.py.
 Standard library only: no new packages, no internet connection.
 """
 import argparse
 import json
+import math
 import queue
 import re
 import threading
@@ -30,6 +34,7 @@ from urllib.parse import parse_qs, urlparse
 
 import joblib
 import numpy as np
+from scipy.signal import resample_poly
 
 from common import config
 from common.events import extract_event
@@ -43,6 +48,8 @@ SETTINGS = ("default", "tuned")
 LANGUAGES = ("de", "en")
 VOICES = ("new", "training")
 MAX_DIGITS = 15
+MAX_CHUNK_BYTES = 65536           # one chunk of browser sound: at most 16384 samples (float32)
+RATES = (8000, 192000)            # sample rates of the browser sound that the server accepts
 
 
 def model_tag(approach, language, tuned):
@@ -131,6 +138,109 @@ def input_device():
         return None
 
 
+class Resampler:
+    """common.preprocessing.load_audio for a stream: resample_poly to 16 kHz, chunk by chunk.
+
+    The filter of resample_poly needs a few samples before and after each sample. So the buffer keeps EDGE samples
+    of history and waits for EDGE samples of look-ahead. The result equals resample_poly on the whole signal
+    (the last EDGE samples are not converted).
+    """
+    EDGE = 256                                                 # input samples; the filter half length is at most 120
+
+    def __init__(self, rate):
+        g = math.gcd(rate, config.SAMPLE_RATE)
+        self.up, self.down = config.SAMPLE_RATE // g, rate // g
+        self.edge = -(-self.EDGE // self.down) * self.down      # a multiple of `down`
+        self.buffer = np.zeros(0, dtype=np.float32)            # history, then samples not yet converted
+        self.history = 0
+
+    def __call__(self, samples):
+        """Add input samples; return the 16 kHz samples that are final now."""
+        self.buffer = np.concatenate([self.buffer, samples.astype(np.float32, copy=False)])
+        n = (len(self.buffer) - self.history - self.edge) // self.down * self.down
+        if n <= 0:
+            return np.zeros(0, dtype=np.float32)
+        h = self.history
+        y = resample_poly(self.buffer[:h + n + self.edge], self.up, self.down)
+        out = y[h * self.up // self.down:(h + n) * self.up // self.down].astype(np.float32)
+        keep = min(self.edge, h + n)
+        self.buffer, self.history = self.buffer[h + n - keep:], keep
+        return out
+
+
+class BrowserFeed:
+    """Sound from the browser: float32 chunks at the rate of the sound card of the visitor."""
+    IDLE_S = 8.0                                               # no chunk for this long: the page has gone
+
+    def __init__(self, rate, label):
+        self.rate, self.label = rate, label
+        self.resampler = Resampler(rate)
+        self.chunks = queue.Queue()
+        self.lock = threading.Lock()
+        self.next = 0                                          # number of the next chunk
+        self.closed = False
+        self.last = time.monotonic()
+
+    def push(self, number, samples):
+        """Add chunk `number`. A chunk that arrives again (the answer was lost) is ignored. False if the run has ended."""
+        with self.lock:
+            if self.closed:
+                return False
+            if number >= self.next:
+                self.next = number + 1
+                self.chunks.put(samples)
+            return True
+
+    def close(self):
+        with self.lock:
+            self.closed = True
+
+    def samples(self, stop):
+        """16 kHz arrays, as long as the page sends sound."""
+        while not stop.is_set() and not self.closed:
+            try:
+                chunk = self.chunks.get(timeout=0.25)
+            except queue.Empty:
+                if time.monotonic() - self.last > self.IDLE_S:
+                    return
+                continue
+            self.last = time.monotonic()
+            out = self.resampler(chunk)
+            if len(out):
+                yield out
+
+
+def block_source_browser(feed, stop):
+    """Like dial.block_source_microphone(): measure the room noise for 1 s, then yield 0.1 s blocks."""
+    stream, pending = feed.samples(stop), np.zeros(0, dtype=np.float32)
+
+    def take(count):
+        nonlocal pending
+        while len(pending) < count:
+            more = next(stream, None)
+            if more is None:
+                return None
+            pending = np.concatenate([pending, more])
+        head, pending = pending[:count], pending[count:]
+        return head
+
+    room = take(config.SAMPLE_RATE)
+    if room is None:
+        if stop.is_set():
+            return 1.0, iter(())
+        raise RuntimeError("No sound came from the browser.")
+    noise = float(np.sqrt(np.mean(room ** 2))) + 1e-6
+
+    def blocks():
+        while True:
+            block = take(BLOCK)
+            if block is None:
+                return
+            yield block
+
+    return noise, blocks()
+
+
 class Demo:
     """One listening run at a time; every open page receives the events."""
 
@@ -142,6 +252,7 @@ class Demo:
         self.thread = None
         self.active = False           # True from Start until the loop ends (the log is written after that)
         self.runs = 0
+        self.feed = None              # BrowserFeed of the run that uses the sound of the browser
         self.microphone = True        # False on a server without a microphone (--no-microphone)
 
     def send(self, **event):
@@ -161,12 +272,15 @@ class Demo:
         return {"language": language, "target": self.target, "models": models, "voices": voices(language),
                 "running": self.running(), "microphone": self.microphone, "threshold_db": round(20 * np.log10(LOUDNESS), 1)}
 
-    def start(self, language, target, simulate, voice):
+    def start(self, language, target, simulate, voice, browser_rate=None, browser_label=""):
         if language not in LANGUAGES or voice not in VOICES:
             return "unknown"
         if not target.isdigit() or len(target) > MAX_DIGITS:
             return "badNumber"
-        if not simulate and not self.microphone:
+        if not simulate and browser_rate is not None and not (
+                isinstance(browser_rate, int) and not isinstance(browser_rate, bool) and RATES[0] <= browser_rate <= RATES[1]):
+            return "badRate"
+        if not simulate and browser_rate is None and not self.microphone:
             return "noMicrophone"
         if self.running():
             return "busy"
@@ -182,12 +296,14 @@ class Demo:
         self.stop.clear()
         self.runs += 1
         self.active = True
-        self.thread = threading.Thread(target=self.run, args=(language, target, simulate, voice, models, self.runs, infos),
+        feed = BrowserFeed(browser_rate, browser_label) if not simulate and browser_rate is not None else None
+        self.feed = feed
+        self.thread = threading.Thread(target=self.run, args=(language, target, simulate, voice, models, self.runs, infos, feed),
                                        daemon=True)
         self.thread.start()
         return None
 
-    def run(self, language, target, simulate, voice, models, seed, infos):
+    def run(self, language, target, simulate, voice, models, seed, infos, feed=None):
         """The loop of live_demo.dial.dial(), with several models, events for the page and a log of the run."""
         blocks, recorder, status, message = None, None, "complete", None
         try:
@@ -199,12 +315,18 @@ class Demo:
                 speaker = split["test"][0] if voice == "new" else split["training"][0]
                 self.send(type="status", key="simulating", speaker=speaker)
                 noise, blocks = block_source_simulated(target, speaker, [language], seed=seed)
+            elif feed is not None:
+                self.send(type="status", key="calibrating")
+                noise, blocks = block_source_browser(feed, self.stop)
+                self.send(type="status", key="listening")
             else:
                 self.send(type="status", key="calibrating")
                 noise, blocks = block_source_microphone()
                 self.send(type="status", key="listening")
             recorder = Recorder(language, target, "simulation" if simulate else "microphone", voice, speaker, noise, infos)
-            recorder.device = None if simulate else input_device()
+            recorder.device = (None if simulate else
+                               f"{feed.label or 'microphone'} (browser, {feed.rate} Hz, resampled to {config.SAMPLE_RATE} Hz)" if feed
+                               else input_device())
             heard = {name: "" for name in models}
             word, quiet, previous, position, first = [], 0, np.zeros(BLOCK, dtype=np.float32), 0, 0
             for block in blocks:
@@ -251,6 +373,8 @@ class Demo:
             status, message = "error", f"{type(error).__name__}: {error}"
             self.send(type="error", message=message)
         finally:
+            if feed is not None:
+                feed.close()                                      # later chunks of the page get the answer "noRun"
             if blocks is not None and hasattr(blocks, "close"):
                 blocks.close()                                    # closes the microphone stream
             self.active = False                                   # the next run may start while the log is written
@@ -297,7 +421,31 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.reply({"error": "not found"}, status=404)
 
+    def audio(self, query):
+        """POST /audio?run=<n>&seq=<k>: one chunk of float32 samples (little endian) from the browser."""
+        length = int(self.headers.get("Content-Length") or 0)
+        if length <= 0 or length > MAX_CHUNK_BYTES or length % 4:
+            self.close_connection = True                          # the body is not read
+            self.reply({"ok": False, "error": "badChunk"}, status=400)
+            return
+        data = self.rfile.read(length)
+        try:
+            run, number = int(query.get("run", [""])[0]), int(query.get("seq", [""])[0])
+        except ValueError:
+            self.reply({"ok": False, "error": "badChunk"}, status=400)
+            return
+        feed = DEMO.feed
+        if feed is None or run != DEMO.runs or not feed.push(number, np.nan_to_num(
+                np.frombuffer(data, dtype="<f4").astype(np.float32), nan=0.0, posinf=0.0, neginf=0.0)):
+            self.reply({"ok": False, "error": "noRun"}, status=409)
+            return
+        self.reply({"ok": True})
+
     def do_POST(self):
+        url = urlparse(self.path)
+        if url.path == "/audio":
+            self.audio(parse_qs(url.query))
+            return
         length = int(self.headers.get("Content-Length") or 0)
         try:
             body = json.loads(self.rfile.read(length) or b"{}")
@@ -305,8 +453,9 @@ class Handler(BaseHTTPRequestHandler):
             body = {}
         if self.path == "/start":
             error = DEMO.start(body.get("language"), str(body.get("target", "")), bool(body.get("simulate")),
-                               body.get("voice", "new"))
-            self.reply({"ok": error is None, "error": error}, status=200 if error is None else 409)
+                               body.get("voice", "new"), browser_rate=body.get("browser_rate"),
+                               browser_label=str(body.get("browser_label") or "")[:80])
+            self.reply({"ok": error is None, "error": error, "run": DEMO.runs}, status=200 if error is None else 409)
         elif self.path == "/stop":
             DEMO.stop.set()
             self.reply({"ok": True})
